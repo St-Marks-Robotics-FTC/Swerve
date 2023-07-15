@@ -116,7 +116,17 @@ public class SwerveDriveOpMode extends LinearOpMode {
             }
 
 
+            // telemetry wheel speeds
+            telemetry.addData("FLspeed", fls);
+            telemetry.addData("FRspeed", frs);
+            telemetry.addData("RLspeed", rls);
+            telemetry.addData("RRspeed", rrs);
 
+            // telemetry wheel angles
+            telemetry.addData("FLangle", fla);
+            telemetry.addData("FRangle", fra);
+            telemetry.addData("RLangle", rla);
+            telemetry.addData("RRangle", rra);
 
 
             telemetry.update();
