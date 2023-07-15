@@ -1,15 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -24,9 +22,9 @@ public class SwerveDriveOpMode extends LinearOpMode {
     IMU imu;
 
 
-    public static double p = 0.0;
-    public static double i = 0.0;
-    public static double d = 0.0;
+    public static double kP = 0.0;
+    public static double kI = 0.0;
+    public static double kD = 0.0;
 
 
     @Override
@@ -63,6 +61,10 @@ public class SwerveDriveOpMode extends LinearOpMode {
         BRencoder = hardwareMap.get(AnalogInput.class, "BRencoder");
 
 
+        PIDController FLpid = new PIDController(kP, kI, kD);
+        PIDController FRpid = new PIDController(kP, kI, kD);
+        PIDController BLpid = new PIDController(kP, kI, kD);
+        PIDController BRpid = new PIDController(kP, kI, kD);
 
         waitForStart();
 
@@ -95,7 +97,7 @@ public class SwerveDriveOpMode extends LinearOpMode {
             double rls = Math.sqrt(a*a + d*d);
             double rrs = Math.sqrt(a*a + c*c);
 
-            // wheel angles
+            // wheel angles in degrees
             double fra = Math.atan2(b,c) * 180/Math.PI;
             double fla = Math.atan2(b,d) * 180/Math.PI;
             double rra = Math.atan2(a,d) * 180/Math.PI;
@@ -121,6 +123,23 @@ public class SwerveDriveOpMode extends LinearOpMode {
 
 
             // Set wheel angles
+            FLpid.setPID(kP, kI, kD);
+            FRpid.setPID(kP, kI, kD);
+            BLpid.setPID(kP, kI, kD);
+            BRpid.setPID(kP, kI, kD);
+
+            double FLoutput = FLpid.calculate(FLencoder.getVoltage() / 3.3 * 360, fla);
+            double FRoutput = FRpid.calculate(FRencoder.getVoltage() / 3.3 * 360, fra);
+            double BLoutput = BLpid.calculate(BLencoder.getVoltage() / 3.3 * 360, rla);
+            double BRoutput = BRpid.calculate(BRencoder.getVoltage() / 3.3 * 360, rra);
+
+            FLsteer.setPower(FLoutput);
+            FRsteer.setPower(FRoutput);
+            BLsteer.setPower(BLoutput);
+            BRsteer.setPower(BRoutput);
+
+
+
 
 
             // Set drive powers
