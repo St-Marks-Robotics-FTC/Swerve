@@ -1,97 +1,125 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+
 public class SwerveDriveOpMode extends LinearOpMode {
-    private DcMotor[] driveMotors;
-    private Servo[] steerServos;
+    private DcMotor FLdrive, FRdrive, BLdrive, BRdrive;
+    private Servo FLsteer, FRsteer, BLsteer, BRsteer;
+    private AnalogInput FLencoder, FRencoder, BLencoder, BRencoder;
+
+    // The IMU sensor object
+    IMU imu;
+
 
     private double[] drivePowers;
     private double[] steerPositions;
 
+
     @Override
     public void runOpMode() {
+
+        // Retrieve and initialize the IMU.
+        // This sample expects the IMU to be in a REV Hub and named "imu".
+        imu = hardwareMap.get(IMU.class, "imu");
+
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+
+        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
+
+        // Now initialize the IMU with this mounting orientation
+        // Note: if you choose two conflicting directions, this initialization will cause a code exception.
+        imu.initialize(new IMU.Parameters(orientationOnRobot));
+
+
         // Initialize hardware components
-        driveMotors = new DcMotor[] {
-                hardwareMap.get(DcMotor.class, "driveMotor1"),
-                hardwareMap.get(DcMotor.class, "driveMotor2"),
-                hardwareMap.get(DcMotor.class, "driveMotor3"),
-                hardwareMap.get(DcMotor.class, "driveMotor4")
-        };
+        FLdrive = hardwareMap.get(DcMotor.class, "FLdrive");
+        FRdrive = hardwareMap.get(DcMotor.class, "FRdrive");
+        BLdrive = hardwareMap.get(DcMotor.class, "BLdrive");
+        BRdrive = hardwareMap.get(DcMotor.class, "BRdrive");
 
-        steerServos = new Servo[] {
-                hardwareMap.get(Servo.class, "steerServo1"),
-                hardwareMap.get(Servo.class, "steerServo2"),
-                hardwareMap.get(Servo.class, "steerServo3"),
-                hardwareMap.get(Servo.class, "steerServo4")
-        };
+        FLsteer = hardwareMap.get(Servo.class, "FLsteer");
+        FRsteer = hardwareMap.get(Servo.class, "FRsteer");
+        BLsteer = hardwareMap.get(Servo.class, "BLsteer");
+        BRsteer = hardwareMap.get(Servo.class, "BRsteer");
 
-        // Initialize drive powers and steer positions
-        drivePowers = new double[4];
-        steerPositions = new double[4];
+        FLencoder = hardwareMap.get(AnalogInput.class, "FLencoder");
+        FRencoder = hardwareMap.get(AnalogInput.class, "FRencoder");
+        BLencoder = hardwareMap.get(AnalogInput.class, "BLencoder");
+        BRencoder = hardwareMap.get(AnalogInput.class, "BRencoder");
 
-        // Set initial powers and positions
-        for (int i = 0; i < 4; i++) {
-            driveMotors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            drivePowers[i] = 0.0;
-            steerPositions[i] = 0.5;
-        }
+
 
         waitForStart();
 
         while (opModeIsActive()) {
-            // Update drive powers and steer positions based on gamepad input
-            updateDrivePowers(gamepad1);
-            updateSteerPositions(gamepad1);
 
-            // Apply drive powers and steer positions to motors and servos
-            for (int i = 0; i < 4; i++) {
-                driveMotors[i].setPower(drivePowers[i]);
-                steerServos[i].setPosition(steerPositions[i]);
+            double fwd = -gamepad1.left_stick_y; // Pushing joystick up is negative
+            double str = gamepad1.left_stick_x; // Pushing joystick to the right is positive
+            double rcw = gamepad1.right_stick_x; // Clockwise rotation is positive
+
+            // Retrieve Rotational Angles and Velocities
+            YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+
+            // field centric
+            double temp = (fwd*Math.cos(orientation.getYaw(AngleUnit.RADIANS))) + str*Math.sin(orientation.getYaw(AngleUnit.RADIANS));
+            double str2 = (-fwd*Math.sin(orientation.getYaw(AngleUnit.RADIANS))) + str*Math.cos(orientation.getYaw(AngleUnit.RADIANS));
+            double fwd2 = temp;
+
+            double wheelbase = 30.0; // inches
+            double trackwidth = 24.0; // inches
+            double r = Math.sqrt((wheelbase*wheelbase) + (trackwidth*trackwidth));
+
+            double a = str2 - rcw * (wheelbase/r);
+            double b = str2 + rcw * (wheelbase/r);
+            double c = fwd2 - rcw * (trackwidth/r);
+            double d = fwd2 + rcw * (trackwidth/r);
+
+            // wheel speeds
+            double frs = Math.sqrt(b*b + c*c);
+            double fls = Math.sqrt(b*b + d*d);
+            double rls = Math.sqrt(a*a + d*d);
+            double rrs = Math.sqrt(a*a + c*c);
+
+            // wheel angles
+            double fra = Math.atan2(b,c) * 180/Math.PI;
+            double fla = Math.atan2(b,d) * 180/Math.PI;
+            double rra = Math.atan2(a,d) * 180/Math.PI;
+            double rla = Math.atan2(a,c) * 180/Math.PI;
+
+            // Normalize wheel speeds
+            double max = frs;
+            if(fls>max){
+                max = fls;
             }
+            if(rls>max){
+                max = rls;
+            }
+            if(rrs>max){
+                max = rrs;
+            }
+            if(max>1){
+                frs/=max;
+                fls/=max;
+                rrs/=max;
+                rls/=max;
+            }
+
+
+
+
 
             telemetry.update();
-            idle();
         }
-    }
-
-    private void updateDrivePowers(Gamepad gamepad) {
-        double driveX = -gamepad.left_stick_x; // Negative because of the coordinate system
-        double driveY = -gamepad.left_stick_y; // Negative because of the coordinate system
-        double rotate = gamepad.right_stick_x;
-
-        // Calculate individual drive motor powers
-        double[] motorPowers = new double[4];
-        motorPowers[0] = driveY + driveX + rotate;
-        motorPowers[1] = driveY - driveX - rotate;
-        motorPowers[2] = driveY - driveX + rotate;
-        motorPowers[3] = driveY + driveX - rotate;
-
-        // Normalize the motor powers to keep them within the range of -1 to 1
-        double maxPower = Math.max(Math.max(Math.abs(motorPowers[0]), Math.abs(motorPowers[1])),
-                Math.max(Math.abs(motorPowers[2]), Math.abs(motorPowers[3])));
-
-        if (maxPower > 1.0) {
-            for (int i = 0; i < 4; i++) {
-                motorPowers[i] /= maxPower;
-            }
-        }
-
-        // Apply exponential scaling to the drive motor powers for smoother control
-        double exponent = 2.0;
-        for (int i = 0; i < 4; i++) {
-            drivePowers[i] = Math.copySign(Math.pow(Math.abs(motorPowers[i]), exponent), motorPowers[i]);
-        }
-    }
-
-    private void updateSteerPositions(Gamepad gamepad) {
-        steerPositions[0] = Range.scale(gamepad.left_trigger, 0.0, 1.0, 0.0, 1.0);
-        steerPositions[1] = Range.scale(gamepad.right_trigger, 0.0, 1.0, 0.0, 1.0);
-        steerPositions[2] = Range.scale(gamepad.left_trigger, 0.0, 1.0, 0.0, 1.0);
-        steerPositions[3] = Range.scale(gamepad.right_trigger, 0.0, 1.0, 0.0, 1.0);
     }
 }
