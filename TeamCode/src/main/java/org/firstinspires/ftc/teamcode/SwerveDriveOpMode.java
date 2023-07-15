@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -12,17 +14,19 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
+@Config
 public class SwerveDriveOpMode extends LinearOpMode {
     private DcMotor FLdrive, FRdrive, BLdrive, BRdrive;
-    private Servo FLsteer, FRsteer, BLsteer, BRsteer;
+    private CRServo FLsteer, FRsteer, BLsteer, BRsteer;
     private AnalogInput FLencoder, FRencoder, BLencoder, BRencoder;
 
     // The IMU sensor object
     IMU imu;
 
 
-    private double[] drivePowers;
-    private double[] steerPositions;
+    public static double p = 0.0;
+    public static double i = 0.0;
+    public static double d = 0.0;
 
 
     @Override
@@ -48,10 +52,10 @@ public class SwerveDriveOpMode extends LinearOpMode {
         BLdrive = hardwareMap.get(DcMotor.class, "BLdrive");
         BRdrive = hardwareMap.get(DcMotor.class, "BRdrive");
 
-        FLsteer = hardwareMap.get(Servo.class, "FLsteer");
-        FRsteer = hardwareMap.get(Servo.class, "FRsteer");
-        BLsteer = hardwareMap.get(Servo.class, "BLsteer");
-        BRsteer = hardwareMap.get(Servo.class, "BRsteer");
+        FLsteer = hardwareMap.get(CRServo.class, "FLsteer");
+        FRsteer = hardwareMap.get(CRServo.class, "FRsteer");
+        BLsteer = hardwareMap.get(CRServo.class, "BLsteer");
+        BRsteer = hardwareMap.get(CRServo.class, "BRsteer");
 
         FLencoder = hardwareMap.get(AnalogInput.class, "FLencoder");
         FRencoder = hardwareMap.get(AnalogInput.class, "FRencoder");
@@ -116,13 +120,16 @@ public class SwerveDriveOpMode extends LinearOpMode {
             }
 
 
+            // Set wheel angles
+
+
             // Set drive powers
             FLdrive.setPower(fls);
             FRdrive.setPower(frs);
             BLdrive.setPower(rls);
             BRdrive.setPower(rrs);
 
-            
+
 
 
             // telemetry wheel speeds
