@@ -82,8 +82,9 @@ public class SwerveDriveOpMode extends LinearOpMode {
             double str2 = (-fwd*Math.sin(orientation.getYaw(AngleUnit.RADIANS))) + str*Math.cos(orientation.getYaw(AngleUnit.RADIANS));
             double fwd2 = temp;
 
-            double wheelbase = 30.0; // inches
-            double trackwidth = 24.0; // inches
+            // units doesn't matter as long as they are the same
+            double wheelbase = 30.0;
+            double trackwidth = 24.0;
             double r = Math.sqrt((wheelbase*wheelbase) + (trackwidth*trackwidth));
 
             double a = str2 - rcw * (wheelbase/r);
