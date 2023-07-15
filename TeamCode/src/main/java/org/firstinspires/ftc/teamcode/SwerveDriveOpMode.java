@@ -116,6 +116,15 @@ public class SwerveDriveOpMode extends LinearOpMode {
             }
 
 
+            // Set drive powers
+            FLdrive.setPower(fls);
+            FRdrive.setPower(frs);
+            BLdrive.setPower(rls);
+            BRdrive.setPower(rrs);
+
+            
+
+
             // telemetry wheel speeds
             telemetry.addData("FLspeed", fls);
             telemetry.addData("FRspeed", frs);
