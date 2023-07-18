@@ -49,6 +49,12 @@ public class SwerveDriveOpMode extends LinearOpMode {
         FRdrive = hardwareMap.get(DcMotor.class, "FRdrive");
         BLdrive = hardwareMap.get(DcMotor.class, "BLdrive");
         BRdrive = hardwareMap.get(DcMotor.class, "BRdrive");
+        
+        // velocity pid
+        FLdrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FRdrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BLdrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BRdrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         FLsteer = hardwareMap.get(CRServo.class, "FLsteer");
         FRsteer = hardwareMap.get(CRServo.class, "FRsteer");
@@ -98,7 +104,7 @@ public class SwerveDriveOpMode extends LinearOpMode {
             double rls = Math.sqrt(a*a + d*d);
             double rrs = Math.sqrt(a*a + c*c);
 
-            // wheel angles in degrees
+            // wheel angles in degrees +- 180
             double fra = Math.atan2(b,c) * 180/Math.PI;
             double fla = Math.atan2(b,d) * 180/Math.PI;
             double rra = Math.atan2(a,d) * 180/Math.PI;
