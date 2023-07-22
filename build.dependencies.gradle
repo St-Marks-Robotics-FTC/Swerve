@@ -23,7 +23,7 @@ dependencies {
 
 
     // Optional
-    implementation 'com.acmerobotics.dashboard:dashboard:0.4.9' // Dashboard
+    implementation 'com.acmerobotics.dashboard:dashboard:0.4.10' // Dashboard
 
 }
 
