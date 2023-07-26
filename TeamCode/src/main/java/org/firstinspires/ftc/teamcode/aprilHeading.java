@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -48,7 +49,8 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@TeleOp(name = "Concept: AprilTag", group = "Concept")
+@Config
+@TeleOp(name = "Apriltag heading", group = "Concept")
 public class aprilHeading extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
@@ -72,6 +74,8 @@ public class aprilHeading extends LinearOpMode {
     private DcMotor frontright;
 
     double frontLeftPower, frontRightPower, backLeftPower, backRightPower;
+
+    public static double kP = 0.01;
 
     @Override
     public void runOpMode() {
@@ -128,6 +132,19 @@ public class aprilHeading extends LinearOpMode {
                     visionPortal.stopStreaming();
                 } else if (gamepad1.dpad_up) {
                     visionPortal.resumeStreaming();
+                }
+
+
+                List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+                for (AprilTagDetection detection : currentDetections) {
+                    if (detection.metadata != null) {
+                        //telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
+                        driveTurn(   kP    *    detection.ftcPose.y);
+
+                    } else {
+                        //telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
+                        //telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
+                    }
                 }
 
                 // Share the CPU.
