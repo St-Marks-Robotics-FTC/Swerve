@@ -150,7 +150,7 @@ public class aprilHeading extends LinearOpMode {
                 }
 
                 // Share the CPU.
-                sleep(10);
+                //sleep(10);
             }
         }
 
