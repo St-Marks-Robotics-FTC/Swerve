@@ -75,7 +75,9 @@ public class aprilHeading extends LinearOpMode {
 
     double frontLeftPower, frontRightPower, backLeftPower, backRightPower;
 
-    public static double kP = 0.01;
+    public static double kPforward = 0.01;
+    public static double kPturn = 0.01;
+    public static double forwardDist;
 
     @Override
     public void runOpMode() {
@@ -139,7 +141,7 @@ public class aprilHeading extends LinearOpMode {
                 for (AprilTagDetection detection : currentDetections) {
                     if (detection.metadata != null) {
                         //telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
-                        driveTurn(   kP    *    detection.ftcPose.x);
+                        drive(kPforward * (detection.ftcPose.range - forwardDist), kPturn * detection.ftcPose.x);
 
                     } else {
                         //telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
@@ -148,7 +150,7 @@ public class aprilHeading extends LinearOpMode {
                 }
 
                 // Share the CPU.
-                sleep(20);
+                sleep(10);
             }
         }
 
@@ -244,18 +246,12 @@ public class aprilHeading extends LinearOpMode {
 
     }   // end method telemetryAprilTag()
 
-    private void driveForward(double power) {
-        frontLeftPower = power;
-        frontRightPower = power;
-        backLeftPower = power;
-        backRightPower = power;
+    private void drive(double forward, double turn) {
+        frontLeftPower = forward + turn;
+        frontRightPower = forward - turn;
+        backLeftPower = forward + turn;
+        backRightPower = forward - turn;
     }
-
-    private void driveTurn(double power) {
-        frontLeftPower = power;
-        frontRightPower = -power;
-        backLeftPower = power;
-        backRightPower = -power;
-    }
+    
 
 }   // end class
