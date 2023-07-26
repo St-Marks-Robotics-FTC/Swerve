@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.RoboPlayers.subsystems;
 
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -16,19 +15,8 @@ public class Outtake {
     public DcMotorEx outtakeSlide1, outtakeSlide2, turret;
     private Servo depositServo, guideServo, lockServo;
 
-    // outtake slide PIDF
-    private PIDController controller;
-
-    public static double p = 0, i = 0, d = 0;
-    public static double f = 0;
-    public static int target = 0;
-
-
-
-
     // deposit
     public static  double transferPos = 0.19; //0.18
-    public static  double capturePos = 0.25; //0.18
     public static double midPos = 0.38; //0.37
     public static double scorePosLeft = 0.81; //.82
     public static double scorePosRight = .85; //.82
@@ -36,12 +24,12 @@ public class Outtake {
 
 
     // turret
-    public static int turretTransfer = 312;
+    public static int turretTransfer = 324;
 
-    public static int leftHighTurret = turretTransfer + 182; // 488
-    public static int leftMidTurret = turretTransfer + 287; // 250
+    public static int leftHighTurret = turretTransfer + 171; // 488
+    public static int leftMidTurret = turretTransfer + 331; // 250
 
-    public static int rightHighTurret = turretTransfer - 160; // 160
+    public static int rightHighTurret = turretTransfer - 145; // 160
     public static int rightMidTurret = turretTransfer - 260; // 210
 
 
@@ -55,7 +43,7 @@ public class Outtake {
     public static int rightHighFar = 130; // ground to high
 
     // outtake slides
-    public static int fullExtendLeft = 1015; // 935
+    public static int fullExtendLeft = 1040; // 935
     public static int fullExtendRight = 1040; // 1030
 
     public static int fullExtendAutoLeft = 1050; // 934
@@ -66,7 +54,7 @@ public class Outtake {
     public static double guideUpPosLeft = .48;
     public static double guideUpPosRight = .5;
     public static double guideScorePos = .52;
-    public static double guideDownPos = .75;
+    public static double guideDownPos = .78;
 
     public static double guideUpLow = .45;
 
@@ -84,7 +72,7 @@ public class Outtake {
 
 
     // different junctions left and right positions Outtake
-    public static int leftMid = 430; // 390
+    public static int leftMid = 445; // 390
     public static int rightMid = 410; // 410
 
     public static int leftlow = 0;
@@ -183,7 +171,7 @@ public class Outtake {
     public void setTurretLeftMid(){
         turret.setTargetPosition(leftMidTurret);
         turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turret.setPower(0.7);
+        turret.setPower(0.85);
     }
 
     public void setTurretAutoLeft (){
@@ -202,6 +190,17 @@ public class Outtake {
 
     public void setTurretMiddle (){
         turret.setTargetPosition(turretTransfer);
+        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        turret.setPower(.4);
+    }
+    public void setSlightRight (){
+        turret.setTargetPosition(turretTransfer - 15);
+        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        turret.setPower(.4);
+    }
+
+    public void setSlightLeft (){
+        turret.setTargetPosition(turretTransfer - 15);
         turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         turret.setPower(.4);
     }
@@ -283,21 +282,21 @@ public class Outtake {
     public void extendSlideAutoLeft(){
         outtakeSlide1.setTargetPosition(fullExtendAutoLeft);
         outtakeSlide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        outtakeSlide1.setPower(1);
+        outtakeSlide1.setPower(0.8);
 
         outtakeSlide2.setTargetPosition(fullExtendAutoLeft);
         outtakeSlide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        outtakeSlide2.setPower(1);
+        outtakeSlide2.setPower(0.8);
     }
 
     public void extendSlidePreloadLeft(){
         outtakeSlide1.setTargetPosition(fullExtendAutoLeft + preloadLeftExtendOffset);
         outtakeSlide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        outtakeSlide1.setPower(1);
+        outtakeSlide1.setPower(0.8);
 
         outtakeSlide2.setTargetPosition(fullExtendAutoLeft + preloadLeftExtendOffset);
         outtakeSlide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        outtakeSlide2.setPower(1);
+        outtakeSlide2.setPower(0.8);
     }
 
     public void extendSlideRight(){
@@ -313,21 +312,21 @@ public class Outtake {
     public void extendSlideAutoRight(){
         outtakeSlide1.setTargetPosition(fullExtendAutoRight);
         outtakeSlide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        outtakeSlide1.setPower(1);
+        outtakeSlide1.setPower(0.8);
 
         outtakeSlide2.setTargetPosition(fullExtendAutoRight);
         outtakeSlide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        outtakeSlide2.setPower(1);
+        outtakeSlide2.setPower(0.8);
     }
 
     public void extendSlidePreloadRight(){
         outtakeSlide1.setTargetPosition(fullExtendAutoRight + preloadRightExtendOffset);
         outtakeSlide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        outtakeSlide1.setPower(1);
+        outtakeSlide1.setPower(0.8);
 
         outtakeSlide2.setTargetPosition(fullExtendAutoRight + preloadRightExtendOffset);
         outtakeSlide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        outtakeSlide2.setPower(1);
+        outtakeSlide2.setPower(0.8);
     }
 
     public void moreExtendLeft(){
@@ -394,16 +393,6 @@ public class Outtake {
         outtakeSlide2.setPower(0.5);
     }
 
-    public void retractSlideSlow (){
-        outtakeSlide1.setTargetPosition(0);
-        outtakeSlide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        outtakeSlide1.setPower(0.25);
-
-        outtakeSlide2.setTargetPosition(0);
-        outtakeSlide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        outtakeSlide2.setPower(0.25);
-    }
-
     public int retractDiff (){
 
         return outtakeSlide1.getCurrentPosition();
@@ -417,10 +406,6 @@ public class Outtake {
 
     public void transferDeposit(){
         depositServo.setPosition(transferPos);
-    }
-
-    public void captureDeposit(){
-        depositServo.setPosition(capturePos);
     }
 
     public void midDeposit(){
@@ -544,33 +529,21 @@ public class Outtake {
     }
 
 
-
-
-    // Slide PID
-    public void initSlidePID(){
-        controller = new PIDController(p, i , d);
+    public double getIntakePower1 (){
+        return outtakeSlide1.getPower();
     }
 
-    public void setSlidePID(double p, double i, double d){
-        controller.setPID(p, i, d);
+    public double getIntakeTarget1 (){
+        return outtakeSlide1.getTargetPosition();
     }
 
-    public void powerSlidePID(){
-        // motors run without encoders
-        outtakeSlide1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        outtakeSlide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        int motorPos = outtakeSlide1.getCurrentPosition();
-        double pid = controller.calculate(motorPos, target);
-
-        double power = pid + f;
-
-        outtakeSlide1.setPower(power);
-        outtakeSlide2.setPower(power);
-
+    public double getIntakePower2 (){
+        return outtakeSlide2.getPower();
     }
 
-
+    public double getIntakeTarget2 (){
+        return outtakeSlide2.getTargetPosition();
+    }
 
 
 

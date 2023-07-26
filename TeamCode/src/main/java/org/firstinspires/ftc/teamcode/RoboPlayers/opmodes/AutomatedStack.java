@@ -6,7 +6,6 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.RoboPlayers.subsystems.Drivetrain;
@@ -32,16 +31,6 @@ public class AutomatedStack extends LinearOpMode {
     // Variables
     public static double guideOffset = -0.4; //.9
     public static double depositTime = 0.6; //.9
-
-    public static double grabTime = .5; //.35
-    public static double flipTime = .7; //.7
-    public static double transferTime = .75; //.35
-    public static double intakeTime = .1; //
-    public static double beaconTime = .3; //
-
-
-
-
 
 
     int coneHeight = 6;
@@ -93,26 +82,17 @@ public class AutomatedStack extends LinearOpMode {
 
 
     ElapsedTime endgameTimer = new ElapsedTime();
-
-    // get battery voltage
-    private VoltageSensor batteryVoltageSensor;
-    private double batteryVoltage;
-
-
+    
     // cycle variables
-
 
     //public static double guideOffset = -0.4; //.9
     //public static double depositTime = 0.6; //.9
-    public static double grabTime2 = .25; //
-    public static double flipTime2 = .72; //.7
-    public static double transferTime2 = .15; //.1
-    public static double intakeTime2 = .25; //
-    public static int depBuffer = 650; // 650
-    public static double depositTime2 = 0.55; //.9
-
-
-
+    public static double grabTime = .3;
+    public static double flipTime = .8; //.95
+    public static double transferTime = .2; //.5
+    public static double intakeTime = .05;
+    public static int depBuffer = 500;
+    public static double depositTime2 = 0.5; //.9
 
     public enum RobotState {
         CONTRACT,
@@ -155,27 +135,6 @@ public class AutomatedStack extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-
-        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
-
-        batteryVoltage = batteryVoltageSensor.getVoltage();
-        // voltage comp
-//        guideOffset = guideOffset * (12 / batteryVoltage);
-//        depositTime = depositTime * (12 / batteryVoltage);
-//
-//        grabTime = grabTime * (12 / batteryVoltage);
-//        flipTime = flipTime * (12 / batteryVoltage);
-//        transferTime = transferTime * (12 / batteryVoltage);
-//        intakeTime = intakeTime * (12 / batteryVoltage);
-//
-//
-//        grabTime2 = grabTime2 * (12 / batteryVoltage);
-//        flipTime2 = flipTime2 * (12 / batteryVoltage);
-//        transferTime2 = transferTime2 * (12 / batteryVoltage);
-//        intakeTime2 = intakeTime2 * (12 / batteryVoltage);
-//        depositTime2 = depositTime2 * (12 / batteryVoltage);
-
-
 
         Gamepad currentGamepad1 = new Gamepad();
         Gamepad previousGamepad1 = new Gamepad();
@@ -243,10 +202,7 @@ public class AutomatedStack extends LinearOpMode {
 
         while (opModeIsActive()) {
             currentGamepad1.copy(gamepad1);
-
-
-            // Voltage
-            batteryVoltage = batteryVoltageSensor.getVoltage();
+            currentGamepad2.copy(gamepad2);
 
 
             // Drive
@@ -282,19 +238,21 @@ public class AutomatedStack extends LinearOpMode {
                     intake.transferPosition(); // fast retraction
                 }
 
+
                 // Circuit
-                ClawState clawState = ClawState.READY;
-                ScoreState scoreState = ScoreState.READY;
+                clawState = ClawState.READY;
+                scoreState = ScoreState.READY;
 
 
                 // Cycle
-                RobotState robotState = RobotState.CONTRACT;
-                RetractState retractState = RetractState.OUTTAKE;
-                CycleState cycleState = CycleState.READY;
+                robotState = RobotState.CONTRACT;
+                retractState = RetractState.DONE;
+                cycleState = CycleState.READY;
 
 
 
 
+                haveCone = true;
                 circuitToggle = !circuitToggle;
             }
 
@@ -310,11 +268,8 @@ public class AutomatedStack extends LinearOpMode {
 
                 // toggle
                 // Rising edge detector
-                if ((currentGamepad1.x && !previousGamepad1.x) || (currentGamepad1.a && !previousGamepad1.a) || (currentGamepad1.share && !previousGamepad1.share)){
+                if ((currentGamepad1.x && !previousGamepad1.x) || (currentGamepad1.a && !previousGamepad1.a) || (currentGamepad2.x && !previousGamepad2.x) || (currentGamepad2.a && !previousGamepad2.a)){
 
-                    if (currentGamepad1.share && !previousGamepad1.share) {
-                        beacon = true;
-                    }
 
                     if (intakeToggle && intake.getDistanceCM() < 3) { // fsm and have cone on press
                         intake.flipArm();
@@ -326,9 +281,9 @@ public class AutomatedStack extends LinearOpMode {
 
                         clawTimer.reset();
                         clawState = ClawState.BEACON;
-                    } else if (intake.getSlide() > 100 && gamepad1.x && !intakeToggle) {
+                    } else if (intake.getIntakeTarget() > 100 && gamepad1.x && !intakeToggle) {
 
-                    } else if (intake.getSlide() < 50 && gamepad1.a && !intakeToggle) {
+                    } else if (intake.getIntakeTarget() < 50 && gamepad1.a && !intakeToggle) {
 
                     } else {
                         // This will set intakeToggle to true if it was previously false
@@ -347,7 +302,7 @@ public class AutomatedStack extends LinearOpMode {
 
                 }
                 else { // arm down
-                    if (gamepad1.x) {
+                    if (gamepad1.x || gamepad2.x) {
                         intake.dropArmAutoR(coneHeight);
                         intake.openClaw();
 
@@ -356,10 +311,9 @@ public class AutomatedStack extends LinearOpMode {
                         } else {
                             intake.transferPosition(); // fast retraction
                         }
-                    } else if (gamepad1.a) {
+                    } else if (gamepad1.a || gamepad2.a) {
                         intake.dropArmAutoR(coneHeight);
                         intake.openClaw();
-
 
                         intake.intakePositionCircuit();
                     }
@@ -381,8 +335,17 @@ public class AutomatedStack extends LinearOpMode {
 
                 if (currentGamepad1.dpad_down && !previousGamepad1.dpad_down &&    coneHeight < 6){
                     coneHeight++;
+                    if (intake.isArmDown()) {
+                        intake.dropArmAutoR(coneHeight);
+                    }
+
+
                 } else if (currentGamepad1.dpad_right && !previousGamepad1.dpad_right &&    coneHeight > 2){
                     coneHeight--;
+                    if (intake.isArmDown()) {
+                        intake.dropArmAutoR(coneHeight);
+                    }
+
                 }
 
                 // Velocity auto zero outtake
@@ -400,11 +363,11 @@ public class AutomatedStack extends LinearOpMode {
 
                 // retract emergency
 
-                if (gamepad1.left_trigger > .15) {
-                    //outtake.transferDeposit();
-                    outtake.retractSlideSlow();
+                if (gamepad1.left_trigger > .15) { // left High
+                    outtake.transferDeposit();
+                    outtake.retractSlide();
                     outtake.setTurretMiddle();
-                    outtake.guideUpLeft();
+                    outtake.guideDown();
                 }
 
 
@@ -412,13 +375,13 @@ public class AutomatedStack extends LinearOpMode {
 
                     // left outtake positions
 
-                    if (gamepad1.dpad_up) { // left High
+                    if (gamepad1.dpad_up || gamepad2.dpad_up) { // left High
                         outtake.setTurretLeftHigh();
                         outtake.extendSlideLeft();
                         outtake.midDeposit();
 
                         scoreState = ScoreState.READY;
-                    } else if (gamepad1.dpad_left) { // left Medium
+                    } else if (gamepad1.dpad_left || gamepad2.dpad_left) { // left Medium
                         outtake.setTurretLeftMid();
                         outtake.slideLeftMid();
                         outtake.midDeposit();
@@ -436,13 +399,13 @@ public class AutomatedStack extends LinearOpMode {
                     // right outtake positions
 
 
-                    if (gamepad1.y) { // right High
+                    if (gamepad1.y || gamepad2.y) { // right High
                         outtake.setTurretRightHigh();
                         outtake.extendSlideRight();
                         outtake.midDeposit();
 
                         scoreState = ScoreState.READY;
-                    } else if (gamepad1.b) { // right Medium
+                    } else if (gamepad1.b || gamepad2.b) { // right Medium
                         outtake.setTurretRightMid();
                         outtake.slideRightMid();
                         outtake.midDeposit();
@@ -472,6 +435,9 @@ public class AutomatedStack extends LinearOpMode {
                         }
                     }
                 }else {
+                    if (outtake.getExtend() < 100) {
+                        outtake.transferDeposit();
+                    }
                     outtake.guideDown();
                 }
 
@@ -634,19 +600,11 @@ public class AutomatedStack extends LinearOpMode {
 
 
 
-            // fix intake overshoot
-            if(intake.getIntakeTarget() > 100) {
-                intake.intakeLessP(); // 3.5
-            } else {
-                intake.intakeMoreP(); // 5
-            }
 
 
 
             previousGamepad1.copy(currentGamepad1);
             previousGamepad2.copy(currentGamepad2);
-
-            telemetry.addData("Voltage: ", batteryVoltage);
 
             telemetry.addData("Extend Position: ", outtake.getExtend());
             telemetry.addData("Turret Position: ", outtake.getTurret());
@@ -659,6 +617,12 @@ public class AutomatedStack extends LinearOpMode {
             telemetry.addData("Outtake Slide 2 Current: ", outtake.getOuttakeSlideCurrent2());
             telemetry.addData("Turret Current: ", outtake.getTurretCurrent());
 
+            telemetry.addData("Outtake1 Slide Power: ", outtake.getIntakePower1());
+            telemetry.addData("Outtake1 Slide Target: ", outtake.getIntakeTarget1());
+
+            telemetry.addData("Outtake2 Slide Power: ", outtake.getIntakePower2());
+            telemetry.addData("Outtake2 Slide Target: ", outtake.getIntakeTarget2());
+
             telemetry.addData("Outtake Velocity: ", outtake.getOuttakeSlideVelocity1());
 
             telemetry.addData("haveCone: ", haveCone);
@@ -667,6 +631,10 @@ public class AutomatedStack extends LinearOpMode {
             telemetry.addData("Intake Slide Target: ", intake.getIntakeTarget());
 
             telemetry.addData("coneHeight: ", coneHeight);
+
+            telemetry.addData("Robot State: ", robotState);
+            telemetry.addData("Retract State: ", retractState);
+            telemetry.addData("Cycle State: ", cycleState);
 
 
 
@@ -701,10 +669,11 @@ public class AutomatedStack extends LinearOpMode {
                 break;
             case GRAB:
 
-                if (clawTimer.seconds() > grabTime) {
+                if (clawTimer.seconds() > .35) {
 
                     // beacon
                     if (haveCone) {
+                        //outtake.transferDeposit();
                         intake.contractArm();
 
                         if (intake.getSlide() < 10) {
@@ -741,13 +710,14 @@ public class AutomatedStack extends LinearOpMode {
                 break;
             case FLIP:
 
-                if (clawTimer.seconds() > flipTime && intake.getSlide() < 7) {
+                if (clawTimer.seconds() > .9 && intake.getSlide() < 10) {
+
+                    outtake.transferDeposit();
 
                     if (beacon) {
                         intake.closeClaw();
                     } else {
                         intake.openClaw();
-                        outtake.captureDeposit(); // goes up a little
                     }
                     outtake.zeroOuttake();
 
@@ -767,7 +737,9 @@ public class AutomatedStack extends LinearOpMode {
                 break;
             case RELEASE:
 
-                if (clawTimer.seconds() > transferTime) {
+                if (clawTimer.seconds() > .35) {
+                    outtake.transferDeposit();
+
                     haveCone = true;
 
                     intake.contractArm();
@@ -780,13 +752,13 @@ public class AutomatedStack extends LinearOpMode {
                 break;
             case RETRACT:
 
-                if (clawTimer.seconds() > intakeTime) {
+                if (clawTimer.seconds() > .1) {
                     clawState = ClawState.READY;
                 }
 
                 break;
             case BEACON:
-                if (clawTimer.seconds() > beaconTime) { // arm from retract to flip
+                if (clawTimer.seconds() > .3) { // arm from retract to flip
                     intake.openClaw();
                     outtake.zeroOuttake();
 
@@ -876,7 +848,7 @@ public class AutomatedStack extends LinearOpMode {
                 }
                 break;
             case GRAB:
-                if (lowTimer.seconds() >= grabTime2) {
+                if (lowTimer.seconds() >= grabTime) {
 
                     intake.armLowPole();
                     if (intake.getSlide() < 10) {
@@ -931,8 +903,8 @@ public class AutomatedStack extends LinearOpMode {
         switch (retractState) {
             case OUTTAKE:
                 outtake.setTurretMiddle();
-                outtake.transferDeposit();
-                outtake.moveSlide(35, 0.5);
+                //outtake.transferDeposit();
+                outtake.moveSlide(-5, .2);
                 outtake.guideDown();
 
                 scoreTimer.reset();
@@ -941,7 +913,7 @@ public class AutomatedStack extends LinearOpMode {
             case INTAKE:
 
                 if (scoreTimer.seconds() >= .7) {
-                    intake.moveToPos(5, 0.5);
+                    intake.moveToPos(-5, 0.5);
                     intake.openClaw();
                     intake.contractArm();
 
@@ -1016,7 +988,7 @@ public class AutomatedStack extends LinearOpMode {
                 }
                 break;
             case GRAB:
-                if (scoreTimer.seconds() >= grabTime2) {
+                if (scoreTimer.seconds() >= grabTime) {
 
                     if (intake.getDistanceCM() < 4) { // have cone
                         if (coneHeight < 6) {
@@ -1032,7 +1004,7 @@ public class AutomatedStack extends LinearOpMode {
                 }
                 break;
             case RETRACT_INTAKE:
-                if (scoreTimer.seconds() >= flipTime2) {
+                if (scoreTimer.seconds() >= flipTime) {
                     intake.openClaw();
 
                     outtake.zeroOuttake();
@@ -1041,7 +1013,7 @@ public class AutomatedStack extends LinearOpMode {
                 }
                 break;
             case FLIP:
-                if (scoreTimer.seconds() >= transferTime2) {
+                if (scoreTimer.seconds() >= transferTime) {
                     intake.readyPosition();
                     intake.dropArmAutoR(coneHeight);
 
@@ -1050,7 +1022,7 @@ public class AutomatedStack extends LinearOpMode {
                 }
                 break;
             case EXTEND_INTAKE:
-                if (scoreTimer.seconds() >= intakeTime2) {
+                if (scoreTimer.seconds() >= intakeTime) {
                     outtake.midDeposit();
                     outtake.setTurretLeftHigh();
                     outtake.extendSlideLeftCycle();
@@ -1118,7 +1090,7 @@ public class AutomatedStack extends LinearOpMode {
                 }
                 break;
             case GRAB:
-                if (scoreTimer.seconds() >= grabTime2) {
+                if (scoreTimer.seconds() >= grabTime) {
 
 
                     if (intake.getDistanceCM() < 4) { // have cone
@@ -1135,7 +1107,7 @@ public class AutomatedStack extends LinearOpMode {
                 }
                 break;
             case RETRACT_INTAKE:
-                if (scoreTimer.seconds() >= flipTime2) {
+                if (scoreTimer.seconds() >= flipTime) {
                     intake.openClaw();
                     outtake.zeroOuttake();
                     scoreTimer.reset();
@@ -1143,7 +1115,7 @@ public class AutomatedStack extends LinearOpMode {
                 }
                 break;
             case FLIP:
-                if (scoreTimer.seconds() >= transferTime2) {
+                if (scoreTimer.seconds() >= transferTime) {
                     intake.readyPosition();
                     intake.dropArmAutoR(coneHeight);
 
@@ -1152,7 +1124,7 @@ public class AutomatedStack extends LinearOpMode {
                 }
                 break;
             case EXTEND_INTAKE:
-                if (scoreTimer.seconds() >= intakeTime2) {
+                if (scoreTimer.seconds() >= intakeTime) {
                     outtake.midDeposit();
                     outtake.setTurretRightHigh();
                     outtake.extendSlideRight();
@@ -1162,7 +1134,7 @@ public class AutomatedStack extends LinearOpMode {
                 }
                 break;
             case EXTEND_OUTTAKE:
-                if (outtake.slideOutDiffRight() < 40) {
+                if (outtake.slideOutDiffRight() < depBuffer) {
 
                     cycleState = CycleState.READY;
                 }

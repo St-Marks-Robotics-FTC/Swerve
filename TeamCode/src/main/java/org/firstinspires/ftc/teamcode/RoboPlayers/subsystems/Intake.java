@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.RoboPlayers.subsystems;
 
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -24,60 +23,52 @@ public class Intake {
     // Distance Sensor
     private DistanceSensor sensorRange;
 
-    // slide PIDF
-    private PIDController controller;
-
-    public static double p = 0, i = 0, d = 0;
-    public static double f = 0;
-    public static int target = 0;
 
 
-
-    double clawClose = .22; //.2
+    double clawClose = .21; //.3
     double clawOpen = 0.0; //.75
 
     public static double flipDown = 0; //0.015
-    public static double flipUp = 0.555; //.57
+    public static double flipUp = 0.58; //.64
     public static double flipContract = 0.4;
     public static double flipStartingPosition = 0.51;
     public static double flipLowPole = .23;
 
-    public static double flip5 = 0.077; //.095
-    public static double flip4 = 0.061; //.075
-    public static double flip3 = 0.037; //.06
-    public static double flip2 = .015; //0.03
+    public static double flip5 = 0.092; //.095
+    public static double flip4 = 0.0715; //.075
+    public static double flip3 = 0.050; //.06
+    public static double flip2 = .027; //0.03
     public static double flip1 = 0; //0.015
 
-    public static double flip5L = 0.080; //.0.077
-    public static double flip4L = 0.067; //.075
-    public static double flip3L = 0.042; //0.037
-    public static double flip2L = .02; //0.017
+    public static double flip5L = 0.090; //.0.077
+    public static double flip4L = 0.0715; //.0.061
+    public static double flip3L = 0.050; //.0.037
+    public static double flip2L = .0290; //0..015
     public static double flip1L = 0; //0.015
 
 
-    public static double multiplier = 103.8 / 145.1;
 
-    public static int slideOut = 300 ; // 420
-    public static int slideOutExtend = 286; // 400
+    public static int slideOut = 420; // 420
+    public static int slideOutExtend = 400; // 420
 
 
     public static int slideIn = 0; //65
 
-    public static int slideInAuto = 0; //0
-    public static int slideOutAuto = 298; //417
+    public static int slideInAuto = 0; //235
+    public static int slideOutAuto = 417; //65
 
-    public static int slideOutAuto5R = 303; //423
-    public static int slideOutAuto4R = 304; //425
-    public static int slideOutAuto3R = 304; //425
-    public static int slideOutAuto2R = 309; //432
-    public static int slideOutAuto1R = 309; //432
+    public static int slideOutAuto5R = 445; //430
+    public static int slideOutAuto4R = 445; //430
+    public static int slideOutAuto3R = 460; //445
+    public static int slideOutAuto2R = 475; //460
+    public static int slideOutAuto1R = 495; //480
 
 
-    public static int slideOutAuto5L = 348; //457 330
-    public static int slideOutAuto4L = 351; //462
-    public static int slideOutAuto3L = 354; //470
-    public static int slideOutAuto2L = 375; //470
-    public static int slideOutAuto1L = 400; //484
+    public static int slideOutAuto5L = 473; //467
+    public static int slideOutAuto4L = 476; //472
+    public static int slideOutAuto3L = 486; //484
+    public static int slideOutAuto2L = 497; //495
+    public static int slideOutAuto1L = 505; //510
 
 
     public void init(HardwareMap hardwareMap){
@@ -97,13 +88,10 @@ public class Intake {
 
         intakeSlide.setDirection(DcMotor.Direction.REVERSE);
 
-        flip1Servo.setDirection(Servo.Direction.REVERSE);
+        flip2Servo.setDirection(Servo.Direction.REVERSE);
 
         intakeSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        // intake slide pid
-        //intakeSlide.setPositionPIDFCoefficients(3.5);
 
 
         // V3 color
@@ -132,33 +120,24 @@ public class Intake {
     }
 
     public void intakePosition (){
-        intakeSlide.setPositionPIDFCoefficients(3.5);
-
         intakeSlide.setTargetPosition(slideOut);
         intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         intakeSlide.setPower(1);
         
     }
 
-    public void intakePositionPID (){
-        target = slideOut;
-    }
-
     public void intakePositionCircuit (){
-        intakeSlide.setPositionPIDFCoefficients(3.5);
-
         intakeSlide.setTargetPosition(slideOutExtend);
         intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        intakeSlide.setPower(1);
-
+        intakeSlide.setPower(.9);
 
     }
 
-    public void intakeLessP (){
-        intakeSlide.setPositionPIDFCoefficients(3.5);
-    }
-    public void intakeMoreP (){
-        intakeSlide.setPositionPIDFCoefficients(10);
+    public void intakePositionFar (){
+        intakeSlide.setTargetPosition(slideOutExtend + 200);
+        intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        intakeSlide.setPower(.9);
+
     }
 /*
     public void autoStackPosition(){
@@ -168,7 +147,6 @@ public class Intake {
     }
 */
     public void autoStackPositionRight(int cone){
-        intakeSlide.setPositionPIDFCoefficients(5);
 
         if (cone == 2) { // Top cone starting stack
             intakeSlide.setTargetPosition(slideOutAuto5R);
@@ -193,11 +171,9 @@ public class Intake {
         }
 
 
-
     }
 
     public void autoStackPositionLeft(int cone){
-        intakeSlide.setPositionPIDFCoefficients(5);
 
         if (cone == 2) { // Top cone starting stack
             intakeSlide.setTargetPosition(slideOutAuto5L);
@@ -212,64 +188,32 @@ public class Intake {
             intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             intakeSlide.setPower(0.7);
         } else if (cone == 5) {
-            intakeSlide.setPositionPIDFCoefficients(7.5);
-
             intakeSlide.setTargetPosition(slideOutAuto2L);
             intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            intakeSlide.setPower(0.85);
+            intakeSlide.setPower(0.7);
         } else if (cone == 6) {
-            intakeSlide.setPositionPIDFCoefficients(7.5);
-
             intakeSlide.setTargetPosition(slideOutAuto1L);
             intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            intakeSlide.setPower(0.95);
+            intakeSlide.setPower(0.7);
         }
 
-
-
-    }
-
-    public void autoStackPositionLeftPID(int cone){
-
-        if (cone == 2) { // Top cone starting stack
-            target = slideOutAuto5L;
-        } else if (cone == 3) {
-            target = slideOutAuto4L;
-        } else if (cone == 4) {
-            target = slideOutAuto3L;
-        } else if (cone == 5) {
-            target = slideOutAuto2L;
-        } else if (cone == 6) {
-            target = slideOutAuto1L;
-        }
 
     }
 
 
     public void readyPosition (){
-        intakeSlide.setPositionPIDFCoefficients(3.5);
-
         intakeSlide.setTargetPosition(slideOut - 250);
         intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         intakeSlide.setPower(0.7);
-
-    }
-
-    public void readyPositionPID (){
-        target = slideOut - 250;
     }
 
     public void transferPosition (){
-        intakeSlide.setPositionPIDFCoefficients(25);
-
-        intakeSlide.setTargetPosition(-10);
+        intakeSlide.setTargetPosition(0);
         intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         intakeSlide.setPower(1);
     }
 
     public void holdIntakeSlide (){
-        intakeSlide.setPositionPIDFCoefficients(10);
-
         intakeSlide.setTargetPosition(3);
         intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         intakeSlide.setPower(.01);
@@ -290,15 +234,9 @@ public class Intake {
     }
 
     public void zeroPosition(){
-        intakeSlide.setPositionPIDFCoefficients(10);
-
         intakeSlide.setTargetPosition(-15);
         intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         intakeSlide.setPower(0.7);
-    }
-
-    public void zeroPositionPID (){
-        target = -15;
     }
 
     public int intakeOutDiff(){
@@ -353,13 +291,6 @@ public class Intake {
         return intakeSlide.getCurrentPosition();
 
     }
-
-    public void intakeForward(){
-        intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        intakeSlide.setPower(0.6);
-    }
-
-
 
 /*
     public void initSlide(){
@@ -530,42 +461,6 @@ public class Intake {
 //    public double getDistanceCM(){
 //        return sensorRange.getDistance(DistanceUnit.CM);
 //    }
-
-
-
-    // PID
-    public void initPID(){
-        intakeSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        controller = new PIDController(p, i , d);
-    }
-
-    public void setPID(double p, double i, double d){
-        controller.setPID(p, i, d);
-    }
-
-    public void powerPID(){
-        // motors run without encoders
-        intakeSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        int motorPos = intakeSlide.getCurrentPosition();
-        double pid = controller.calculate(motorPos, target);
-
-        double power = pid + f;
-
-        intakeSlide.setPower(power);
-
-    }
-
-    public void intakePositionCircuitPID (){
-        target = slideOutExtend;
-    }
-
-    public void transferPID (){
-        target = 0;
-    }
-
-
 
 
 }
