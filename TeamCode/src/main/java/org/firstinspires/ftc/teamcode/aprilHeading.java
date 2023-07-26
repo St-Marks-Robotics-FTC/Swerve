@@ -139,7 +139,7 @@ public class aprilHeading extends LinearOpMode {
                 for (AprilTagDetection detection : currentDetections) {
                     if (detection.metadata != null) {
                         //telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
-                        driveTurn(   kP    *    detection.ftcPose.y);
+                        driveTurn(   kP    *    detection.ftcPose.x);
 
                     } else {
                         //telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
