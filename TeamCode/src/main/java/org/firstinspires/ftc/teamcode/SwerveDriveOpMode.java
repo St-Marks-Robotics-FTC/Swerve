@@ -18,6 +18,12 @@ public class SwerveDriveOpMode extends LinearOpMode {
     private CRServo FLsteer, FRsteer, BLsteer, BRsteer;
     private AnalogInput FLencoder, FRencoder, BLencoder, BRencoder;
 
+    public static double FLoffset = 0.0;
+    public static double FRoffset = 0.0;
+    public static double BLoffset = 0.0;
+    public static double BRoffset = 0.0;
+
+
     // The IMU sensor object
     IMU imu;
 
@@ -135,10 +141,10 @@ public class SwerveDriveOpMode extends LinearOpMode {
             BLpid.setPID(kP, kI, kD);
             BRpid.setPID(kP, kI, kD);
 
-            double FLoutput = FLpid.calculate(FLencoder.getVoltage() / 3.3 * 360, fla);
-            double FRoutput = FRpid.calculate(FRencoder.getVoltage() / 3.3 * 360, fra);
-            double BLoutput = BLpid.calculate(BLencoder.getVoltage() / 3.3 * 360, rla);
-            double BRoutput = BRpid.calculate(BRencoder.getVoltage() / 3.3 * 360, rra);
+            double FLoutput = FLpid.calculate(FLencoder.getVoltage() / 3.3 * 360 - FLoffset, fla);
+            double FRoutput = FRpid.calculate(FRencoder.getVoltage() / 3.3 * 360 - FRoffset, fra);
+            double BLoutput = BLpid.calculate(BLencoder.getVoltage() / 3.3 * 360 - BLoffset, rla);
+            double BRoutput = BRpid.calculate(BRencoder.getVoltage() / 3.3 * 360 - BRoffset, rra);
 
             FLsteer.setPower(FLoutput);
             FRsteer.setPower(FRoutput);
