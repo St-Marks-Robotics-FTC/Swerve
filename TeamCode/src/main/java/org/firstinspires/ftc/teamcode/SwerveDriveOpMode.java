@@ -51,10 +51,10 @@ public class SwerveDriveOpMode extends LinearOpMode {
         BRdrive = hardwareMap.get(DcMotor.class, "BRdrive");
         
         // velocity pid
-        FLdrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        FRdrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BLdrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BRdrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FLdrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FRdrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BLdrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BRdrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         FLsteer = hardwareMap.get(CRServo.class, "FLsteer");
         FRsteer = hardwareMap.get(CRServo.class, "FRsteer");
