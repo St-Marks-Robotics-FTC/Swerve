@@ -132,8 +132,8 @@ public class SwerveDriveOpMode extends LinearOpMode {
             // wheel angles in degrees +- 180
             double fra = Math.atan2(b,c) * 180/Math.PI;
             double fla = Math.atan2(b,d) * 180/Math.PI;
-            double rra = Math.atan2(a,d) * 180/Math.PI;
-            double rla = Math.atan2(a,c) * 180/Math.PI;
+            double bra = Math.atan2(a,d) * 180/Math.PI;
+            double bla = Math.atan2(a,c) * 180/Math.PI;
 
             // Normalize wheel speeds
             double max = frs;
@@ -169,8 +169,8 @@ public class SwerveDriveOpMode extends LinearOpMode {
             // Errors
             double FLerror = normalizeDegrees(fla - FLpos);
             double FRerror = normalizeDegrees(fra - FRpos);
-            double BLerror = normalizeDegrees(rla - BLpos);
-            double BRerror = normalizeDegrees(rra - BRpos);
+            double BLerror = normalizeDegrees(bla - BLpos);
+            double BRerror = normalizeDegrees(bra - BRpos);
 
             // flip shortcut
             if (MOTOR_FLIPPING && Math.abs(FLerror) > Math.PI / 2) {
@@ -186,13 +186,13 @@ public class SwerveDriveOpMode extends LinearOpMode {
                 FRflipped = false;
             }
             if (MOTOR_FLIPPING && Math.abs(BLerror) > Math.PI / 2) {
-                rla = normalizeRadians(rla - Math.PI);
+                bla = normalizeRadians(bla - Math.PI);
                 BLflipped = true;
             } else {
                 BLflipped = false;
             }
             if (MOTOR_FLIPPING && Math.abs(BRerror) > Math.PI / 2) {
-                rra = normalizeRadians(rra - Math.PI);
+                bra = normalizeRadians(bra - Math.PI);
                 BRflipped = true;
             } else {
                 BRflipped = false;
@@ -200,8 +200,8 @@ public class SwerveDriveOpMode extends LinearOpMode {
 
             FLerror = normalizeDegrees(fla - FLpos);
             FRerror = normalizeDegrees(fra - FRpos);
-            BLerror = normalizeDegrees(rla - BLpos);
-            BRerror = normalizeDegrees(rra - BRpos);
+            BLerror = normalizeDegrees(bla - BLpos);
+            BRerror = normalizeDegrees(bra - BRpos);
 
 
             // Wheel PID angles
@@ -246,14 +246,20 @@ public class SwerveDriveOpMode extends LinearOpMode {
             // telemetry wheel speeds
             telemetry.addData("FLspeed", fls);
             telemetry.addData("FRspeed", frs);
-            telemetry.addData("RLspeed", rls);
-            telemetry.addData("RRspeed", rrs);
+            telemetry.addData("BLspeed", rls);
+            telemetry.addData("BRspeed", rrs);
 
             // telemetry wheel angles
             telemetry.addData("FLangle", fla);
             telemetry.addData("FRangle", fra);
-            telemetry.addData("RLangle", rla);
-            telemetry.addData("RRangle", rra);
+            telemetry.addData("BLangle", bla);
+            telemetry.addData("BRangle", bra);
+
+            // telemetry flipped values
+            telemetry.addData("FLflipped", FLflipped);
+            telemetry.addData("FRflipped", FRflipped);
+            telemetry.addData("BLflipped", BLflipped);
+            telemetry.addData("BRflipped", BRflipped);
 
 
             telemetry.update();
