@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeDegrees;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -158,10 +159,10 @@ public class SwerveDriveOpMode extends LinearOpMode {
             double BRpos = BRencoder.getVoltage() / 3.3 * 360 - BRoffset;
 
             // Errors
-            double FLerror = fla - FLpos;
-            double FRerror = fra - FRpos;
-            double BLerror = rla - BLpos;
-            double BRerror = rra - BRpos;
+            double FLerror = normalizeDegrees(fla - FLpos);
+            double FRerror = normalizeDegrees(fra - FRpos);
+            double BLerror = normalizeDegrees(rla - BLpos);
+            double BRerror = normalizeDegrees(rra - BRpos);
 
 
             // Wheel PID angles
