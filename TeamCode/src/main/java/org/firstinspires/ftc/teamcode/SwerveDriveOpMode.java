@@ -25,7 +25,7 @@ public class SwerveDriveOpMode extends LinearOpMode {
     private CRServoImplEx FLsteer, FRsteer, BLsteer, BRsteer;
     private AnalogInput FLencoder, FRencoder, BLencoder, BRencoder;
 
-    public static boolean MOTOR_FLIPPING = true;
+    public static boolean MOTOR_FLIPPING = false;
 
     public boolean FLflipped = false;
     public boolean FRflipped = false;
