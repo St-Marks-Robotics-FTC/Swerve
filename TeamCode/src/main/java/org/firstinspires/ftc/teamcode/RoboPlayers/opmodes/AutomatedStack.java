@@ -505,7 +505,7 @@ public class AutomatedStack extends LinearOpMode {
                         }
 
                         // Test Placement
-                        if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper) {
+                        if ((currentGamepad1.right_bumper && !previousGamepad1.right_bumper) || (currentGamepad2.right_bumper && !previousGamepad2.right_bumper)) {
                             outtake.scoreDepositLeft(); // Score
                         } else if (!currentGamepad1.right_bumper && previousGamepad1.right_bumper) { // Falling edge detector
                             outtake.midDeposit(); // Go Back
@@ -930,7 +930,7 @@ public class AutomatedStack extends LinearOpMode {
                 }
 
                 // Test Placement
-                if (gamepad1.right_trigger > .15) {
+                if (gamepad1.right_trigger > .15 || gamepad2.right_trigger > .15) {
                     outtake.guideUpLeft(); // Score
                 } else { // Falling edge detector
                     outtake.guideDown(); // Go Back
