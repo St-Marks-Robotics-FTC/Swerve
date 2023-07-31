@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.PwmControl;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -69,6 +70,12 @@ public class SwerveDriveOpMode extends LinearOpMode {
         FRsteer = hardwareMap.get(CRServoImplEx.class, "FRsteer");
         BLsteer = hardwareMap.get(CRServoImplEx.class, "BLsteer");
         BRsteer = hardwareMap.get(CRServoImplEx.class, "BRsteer");
+
+        // axon servos have a PWM range of 500us-2500us
+        FLsteer.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        FRsteer.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        BLsteer.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        BRsteer.setPwmRange(new PwmControl.PwmRange(500, 2500));
 
         FLencoder = hardwareMap.get(AnalogInput.class, "FLencoder");
         FRencoder = hardwareMap.get(AnalogInput.class, "FRencoder");
