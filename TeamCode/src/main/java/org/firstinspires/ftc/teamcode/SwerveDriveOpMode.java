@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -15,7 +18,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 @Config
 public class SwerveDriveOpMode extends LinearOpMode {
     private DcMotor FLdrive, FRdrive, BLdrive, BRdrive;
-    private CRServo FLsteer, FRsteer, BLsteer, BRsteer;
+    private CRServoImplEx FLsteer, FRsteer, BLsteer, BRsteer;
     private AnalogInput FLencoder, FRencoder, BLencoder, BRencoder;
 
     public static double FLoffset = 0.0;
@@ -62,10 +65,10 @@ public class SwerveDriveOpMode extends LinearOpMode {
         BLdrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BRdrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        FLsteer = hardwareMap.get(CRServo.class, "FLsteer");
-        FRsteer = hardwareMap.get(CRServo.class, "FRsteer");
-        BLsteer = hardwareMap.get(CRServo.class, "BLsteer");
-        BRsteer = hardwareMap.get(CRServo.class, "BRsteer");
+        FLsteer = hardwareMap.get(CRServoImplEx.class, "FLsteer");
+        FRsteer = hardwareMap.get(CRServoImplEx.class, "FRsteer");
+        BLsteer = hardwareMap.get(CRServoImplEx.class, "BLsteer");
+        BRsteer = hardwareMap.get(CRServoImplEx.class, "BRsteer");
 
         FLencoder = hardwareMap.get(AnalogInput.class, "FLencoder");
         FRencoder = hardwareMap.get(AnalogInput.class, "FRencoder");
@@ -141,10 +144,24 @@ public class SwerveDriveOpMode extends LinearOpMode {
             BLpid.setPID(kP, kI, kD);
             BRpid.setPID(kP, kI, kD);
 
-            double FLoutput = FLpid.calculate(FLencoder.getVoltage() / 3.3 * 360 - FLoffset, fla);
-            double FRoutput = FRpid.calculate(FRencoder.getVoltage() / 3.3 * 360 - FRoffset, fra);
-            double BLoutput = BLpid.calculate(BLencoder.getVoltage() / 3.3 * 360 - BLoffset, rla);
-            double BRoutput = BRpid.calculate(BRencoder.getVoltage() / 3.3 * 360 - BRoffset, rra);
+            // Wheel positions
+            double FLpos = FLencoder.getVoltage() / 3.3 * 360 - FLoffset;
+            double FRpos = FRencoder.getVoltage() / 3.3 * 360 - FRoffset;
+            double BLpos = BLencoder.getVoltage() / 3.3 * 360 - BLoffset;
+            double BRpos = BRencoder.getVoltage() / 3.3 * 360 - BRoffset;
+
+            // Errors
+            double FLerror = fla - FLpos;
+            double FRerror = fra - FRpos;
+            double BLerror = rla - BLpos;
+            double BRerror = rra - BRpos;
+
+
+            // Wheel PID angles
+            double FLoutput = FLpid.calculate(0, FLerror);
+            double FRoutput = FRpid.calculate(0, FRerror);
+            double BLoutput = BLpid.calculate(0, BLerror);
+            double BRoutput = BRpid.calculate(0, BRerror);
 
             FLsteer.setPower(FLoutput);
             FRsteer.setPower(FRoutput);
