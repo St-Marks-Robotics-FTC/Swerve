@@ -23,6 +23,14 @@ public class SwerveDriveOpMode extends LinearOpMode {
     private CRServoImplEx FLsteer, FRsteer, BLsteer, BRsteer;
     private AnalogInput FLencoder, FRencoder, BLencoder, BRencoder;
 
+    public static boolean MOTOR_FLIPPING = true;
+
+    public boolean FLflipped = false;
+    public boolean FRflipped = false;
+    public boolean BLflipped = false;
+    public boolean BRflipped = false;
+
+
     public static double FLoffset = 0.0;
     public static double FRoffset = 0.0;
     public static double BLoffset = 0.0;
@@ -164,6 +172,37 @@ public class SwerveDriveOpMode extends LinearOpMode {
             double BLerror = normalizeDegrees(rla - BLpos);
             double BRerror = normalizeDegrees(rra - BRpos);
 
+            // flip shortcut
+            if (MOTOR_FLIPPING && Math.abs(FLerror) > Math.PI / 2) {
+                fla = normalizeRadians(fla - Math.PI);
+                FLflipped = true;
+            } else {
+                FLflipped = false;
+            }
+            if (MOTOR_FLIPPING && Math.abs(FRerror) > Math.PI / 2) {
+                fra = normalizeRadians(fra - Math.PI);
+                FRflipped = true;
+            } else {
+                FRflipped = false;
+            }
+            if (MOTOR_FLIPPING && Math.abs(BLerror) > Math.PI / 2) {
+                rla = normalizeRadians(rla - Math.PI);
+                BLflipped = true;
+            } else {
+                BLflipped = false;
+            }
+            if (MOTOR_FLIPPING && Math.abs(BRerror) > Math.PI / 2) {
+                rra = normalizeRadians(rra - Math.PI);
+                BRflipped = true;
+            } else {
+                BRflipped = false;
+            }
+
+            FLerror = normalizeDegrees(fla - FLpos);
+            FRerror = normalizeDegrees(fra - FRpos);
+            BLerror = normalizeDegrees(rla - BLpos);
+            BRerror = normalizeDegrees(rra - BRpos);
+
 
             // Wheel PID angles
             double FLoutput = FLpid.calculate(0, FLerror);
@@ -181,10 +220,25 @@ public class SwerveDriveOpMode extends LinearOpMode {
 
 
             // Set drive powers
-            FLdrive.setPower(fls);
-            FRdrive.setPower(frs);
-            BLdrive.setPower(rls);
-            BRdrive.setPower(rrs);
+            if (FLflipped)
+                FLdrive.setPower(-fls);
+            else
+                FLdrive.setPower(fls);
+
+            if (FRflipped)
+                FRdrive.setPower(-frs);
+            else
+                FRdrive.setPower(frs);
+
+            if (BLflipped)
+                BLdrive.setPower(-rls);
+            else
+                BLdrive.setPower(rls);
+
+            if (BRflipped)
+                BRdrive.setPower(-rrs);
+            else
+                BRdrive.setPower(rrs);
 
 
 
