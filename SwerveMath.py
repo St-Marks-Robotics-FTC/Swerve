@@ -9,7 +9,7 @@ def run_swerve_drive():
     kI = 0.0
     kD = 0.0
 
-    MOTOR_FLIPPING = False
+    MOTOR_FLIPPING = True
 
     FRoffset = 0.0
     FLoffset = 0.0
@@ -71,23 +71,23 @@ def run_swerve_drive():
     BRerror = normalize_degrees(bra - BRpos)
 
     # Flip shortcut
-    if MOTOR_FLIPPING and abs(FRerror) > math.pi / 2:
-        fra = normalize_degrees(fra - math.pi)
+    if MOTOR_FLIPPING and abs(FRerror) > 90:
+        fra = normalize_degrees(fra - 180)
         FRflipped = True
     else:
         FRflipped = False
-    if MOTOR_FLIPPING and abs(FLerror) > math.pi / 2:
-        fla = normalize_degrees(fla - math.pi)
+    if MOTOR_FLIPPING and abs(FLerror) > 90:
+        fla = normalize_degrees(fla - 180)
         FLflipped = True
     else:
         FLflipped = False
-    if MOTOR_FLIPPING and abs(BLerror) > math.pi / 2:
-        bla = normalize_degrees(bla - math.pi)
+    if MOTOR_FLIPPING and abs(BLerror) > 90:
+        bla = normalize_degrees(bla - 180)
         BLflipped = True
     else:
         BLflipped = False
-    if MOTOR_FLIPPING and abs(BRerror) > math.pi / 2:
-        bra = normalize_degrees(bra - math.pi)
+    if MOTOR_FLIPPING and abs(BRerror) > 90:
+        bra = normalize_degrees(bra - 180)
         BRflipped = True
     else:
         BRflipped = False
