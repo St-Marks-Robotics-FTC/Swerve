@@ -68,36 +68,36 @@ public class SwerveDriveOpMode extends LinearOpMode {
 
 
         // Initialize hardware components
-        FLdrive = hardwareMap.get(DcMotor.class, "FLdrive");
         FRdrive = hardwareMap.get(DcMotor.class, "FRdrive");
+        FLdrive = hardwareMap.get(DcMotor.class, "FLdrive");
         BLdrive = hardwareMap.get(DcMotor.class, "BLdrive");
         BRdrive = hardwareMap.get(DcMotor.class, "BRdrive");
         
         // velocity pid
-        FLdrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FRdrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FLdrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BLdrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BRdrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        FLsteer = hardwareMap.get(CRServoImplEx.class, "FLsteer");
         FRsteer = hardwareMap.get(CRServoImplEx.class, "FRsteer");
+        FLsteer = hardwareMap.get(CRServoImplEx.class, "FLsteer");
         BLsteer = hardwareMap.get(CRServoImplEx.class, "BLsteer");
         BRsteer = hardwareMap.get(CRServoImplEx.class, "BRsteer");
 
         // axon servos have a PWM range of 500us-2500us
-        FLsteer.setPwmRange(new PwmControl.PwmRange(500, 2500));
         FRsteer.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        FLsteer.setPwmRange(new PwmControl.PwmRange(500, 2500));
         BLsteer.setPwmRange(new PwmControl.PwmRange(500, 2500));
         BRsteer.setPwmRange(new PwmControl.PwmRange(500, 2500));
 
-        FLencoder = hardwareMap.get(AnalogInput.class, "FLencoder");
         FRencoder = hardwareMap.get(AnalogInput.class, "FRencoder");
+        FLencoder = hardwareMap.get(AnalogInput.class, "FLencoder");
         BLencoder = hardwareMap.get(AnalogInput.class, "BLencoder");
         BRencoder = hardwareMap.get(AnalogInput.class, "BRencoder");
 
 
-        PIDController FLpid = new PIDController(kP, kI, kD);
         PIDController FRpid = new PIDController(kP, kI, kD);
+        PIDController FLpid = new PIDController(kP, kI, kD);
         PIDController BLpid = new PIDController(kP, kI, kD);
         PIDController BRpid = new PIDController(kP, kI, kD);
 
@@ -130,64 +130,64 @@ public class SwerveDriveOpMode extends LinearOpMode {
             // wheel speeds
             double frs = Math.sqrt(b*b + c*c);
             double fls = Math.sqrt(b*b + d*d);
-            double rls = Math.sqrt(a*a + d*d);
-            double rrs = Math.sqrt(a*a + c*c);
+            double bls = Math.sqrt(a*a + d*d);
+            double brs = Math.sqrt(a*a + c*c);
 
             // wheel angles in degrees +- 180
             double fra = Math.atan2(b,c) * 180/Math.PI;
             double fla = Math.atan2(b,d) * 180/Math.PI;
-            double bra = Math.atan2(a,d) * 180/Math.PI;
-            double bla = Math.atan2(a,c) * 180/Math.PI;
+            double bla = Math.atan2(a,d) * 180/Math.PI;
+            double bra = Math.atan2(a,c) * 180/Math.PI;
 
             // Normalize wheel speeds
             double max = frs;
             if(fls>max){
                 max = fls;
             }
-            if(rls>max){
-                max = rls;
+            if(bls>max){
+                max = bls;
             }
-            if(rrs>max){
-                max = rrs;
+            if(brs>max){
+                max = brs;
             }
             if(max>1){
                 frs/=max;
                 fls/=max;
-                rrs/=max;
-                rls/=max;
+                brs/=max;
+                bls/=max;
             }
 
 
             // Set wheel angles
-            FLpid.setPID(kP, kI, kD);
             FRpid.setPID(kP, kI, kD);
+            FLpid.setPID(kP, kI, kD);
             BLpid.setPID(kP, kI, kD);
             BRpid.setPID(kP, kI, kD);
 
             // Wheel positions
-            double FLpos = FLencoder.getVoltage() / 3.3 * 360 - FLoffset;
             double FRpos = FRencoder.getVoltage() / 3.3 * 360 - FRoffset;
+            double FLpos = FLencoder.getVoltage() / 3.3 * 360 - FLoffset;
             double BLpos = BLencoder.getVoltage() / 3.3 * 360 - BLoffset;
             double BRpos = BRencoder.getVoltage() / 3.3 * 360 - BRoffset;
 
             // Errors
-            double FLerror = normalizeDegrees(fla - FLpos);
             double FRerror = normalizeDegrees(fra - FRpos);
+            double FLerror = normalizeDegrees(fla - FLpos);
             double BLerror = normalizeDegrees(bla - BLpos);
             double BRerror = normalizeDegrees(bra - BRpos);
 
             // flip shortcut
-            if (MOTOR_FLIPPING && Math.abs(FLerror) > Math.PI / 2) {
-                fla = normalizeDegrees(fla - Math.PI);
-                FLflipped = true;
-            } else {
-                FLflipped = false;
-            }
             if (MOTOR_FLIPPING && Math.abs(FRerror) > Math.PI / 2) {
                 fra = normalizeDegrees(fra - Math.PI);
                 FRflipped = true;
             } else {
                 FRflipped = false;
+            }
+            if (MOTOR_FLIPPING && Math.abs(FLerror) > Math.PI / 2) {
+                fla = normalizeDegrees(fla - Math.PI);
+                FLflipped = true;
+            } else {
+                FLflipped = false;
             }
             if (MOTOR_FLIPPING && Math.abs(BLerror) > Math.PI / 2) {
                 bla = normalizeDegrees(bla - Math.PI);
@@ -202,20 +202,20 @@ public class SwerveDriveOpMode extends LinearOpMode {
                 BRflipped = false;
             }
 
-            FLerror = normalizeDegrees(fla - FLpos);
             FRerror = normalizeDegrees(fra - FRpos);
+            FLerror = normalizeDegrees(fla - FLpos);
             BLerror = normalizeDegrees(bla - BLpos);
             BRerror = normalizeDegrees(bra - BRpos);
 
 
             // Wheel PID angles
-            double FLoutput = FLpid.calculate(0, FLerror);
             double FRoutput = FRpid.calculate(0, FRerror);
+            double FLoutput = FLpid.calculate(0, FLerror);
             double BLoutput = BLpid.calculate(0, BLerror);
             double BRoutput = BRpid.calculate(0, BRerror);
 
-            FLsteer.setPower(FLoutput);
             FRsteer.setPower(FRoutput);
+            FLsteer.setPower(FLoutput);
             BLsteer.setPower(BLoutput);
             BRsteer.setPower(BRoutput);
 
@@ -224,44 +224,44 @@ public class SwerveDriveOpMode extends LinearOpMode {
 
 
             // Set drive powers
-            if (FLflipped)
-                FLdrive.setPower(-fls);
-            else
-                FLdrive.setPower(fls);
-
             if (FRflipped)
                 FRdrive.setPower(-frs);
             else
                 FRdrive.setPower(frs);
 
-            if (BLflipped)
-                BLdrive.setPower(-rls);
+            if (FLflipped)
+                FLdrive.setPower(-fls);
             else
-                BLdrive.setPower(rls);
+                FLdrive.setPower(fls);
+
+            if (BLflipped)
+                BLdrive.setPower(-bls);
+            else
+                BLdrive.setPower(bls);
 
             if (BRflipped)
-                BRdrive.setPower(-rrs);
+                BRdrive.setPower(-brs);
             else
-                BRdrive.setPower(rrs);
+                BRdrive.setPower(brs);
 
 
 
 
             // telemetry wheel speeds
-            telemetry.addData("FLspeed", fls);
             telemetry.addData("FRspeed", frs);
-            telemetry.addData("BLspeed", rls);
-            telemetry.addData("BRspeed", rrs);
+            telemetry.addData("FLspeed", fls);
+            telemetry.addData("BLspeed", bls);
+            telemetry.addData("BRspeed", brs);
 
             // telemetry wheel angles
-            telemetry.addData("FLangle", fla);
             telemetry.addData("FRangle", fra);
+            telemetry.addData("FLangle", fla);
             telemetry.addData("BLangle", bla);
             telemetry.addData("BRangle", bra);
 
             // telemetry flipped values
-            telemetry.addData("FLflipped", FLflipped);
             telemetry.addData("FRflipped", FRflipped);
+            telemetry.addData("FLflipped", FLflipped);
             telemetry.addData("BLflipped", BLflipped);
             telemetry.addData("BRflipped", BRflipped);
 
