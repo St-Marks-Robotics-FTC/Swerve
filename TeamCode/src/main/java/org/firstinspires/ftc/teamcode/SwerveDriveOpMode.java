@@ -63,6 +63,8 @@ public class SwerveDriveOpMode extends LinearOpMode {
         // Now initialize the IMU with this mounting orientation
         // Note: if you choose two conflicting directions, this initialization will cause a code exception.
         imu.initialize(new IMU.Parameters(orientationOnRobot));
+        // Reset Yaw
+        imu.resetYaw();
 
 
         // Initialize hardware components
