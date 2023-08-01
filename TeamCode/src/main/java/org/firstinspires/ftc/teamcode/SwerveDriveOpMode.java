@@ -177,26 +177,26 @@ public class SwerveDriveOpMode extends LinearOpMode {
             double BRerror = normalizeDegrees(bra - BRpos);
 
             // flip shortcut
-            if (MOTOR_FLIPPING && Math.abs(FRerror) > Math.PI / 2) {
-                fra = normalizeDegrees(fra - Math.PI);
+            if (MOTOR_FLIPPING && Math.abs(FRerror) > 90) {
+                fra = normalizeDegrees(fra - 180);
                 FRflipped = true;
             } else {
                 FRflipped = false;
             }
-            if (MOTOR_FLIPPING && Math.abs(FLerror) > Math.PI / 2) {
-                fla = normalizeDegrees(fla - Math.PI);
+            if (MOTOR_FLIPPING && Math.abs(FLerror) > 90) {
+                fla = normalizeDegrees(fla - 180);
                 FLflipped = true;
             } else {
                 FLflipped = false;
             }
-            if (MOTOR_FLIPPING && Math.abs(BLerror) > Math.PI / 2) {
-                bla = normalizeDegrees(bla - Math.PI);
+            if (MOTOR_FLIPPING && Math.abs(BLerror) > 90) {
+                bla = normalizeDegrees(bla - 180);
                 BLflipped = true;
             } else {
                 BLflipped = false;
             }
-            if (MOTOR_FLIPPING && Math.abs(BRerror) > Math.PI / 2) {
-                bra = normalizeDegrees(bra - Math.PI);
+            if (MOTOR_FLIPPING && Math.abs(BRerror) > 90) {
+                bra = normalizeDegrees(bra - 180);
                 BRflipped = true;
             } else {
                 BRflipped = false;
