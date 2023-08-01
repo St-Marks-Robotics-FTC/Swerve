@@ -11,8 +11,8 @@ def run_swerve_drive():
 
     MOTOR_FLIPPING = False
 
-    FLoffset = 0.0
     FRoffset = 0.0
+    FLoffset = 0.0
     BLoffset = 0.0
     BRoffset = 0.0
 
@@ -23,7 +23,7 @@ def run_swerve_drive():
     # while True:
     fwd = 0            # -gamepad1.left_stick_y  # Pushing joystick up is negative
     str = 0            # gamepad1.left_stick_x   # Pushing joystick to the right is positive
-    rcw = 1            # gamepad1.right_stick_x  # Clockwise rotation is positive
+    rcw = .5            # gamepad1.right_stick_x  # Clockwise rotation is positive
 
     # Retrieve Rotational Angles and Velocities
     orientation = 0    # imu.getRobotYawPitchRollAngles()
@@ -47,8 +47,8 @@ def run_swerve_drive():
     # Wheel angles in degrees +- 180
     fra = math.atan2(b, c) * 180 / math.pi
     fla = math.atan2(b, d) * 180 / math.pi
-    bra = math.atan2(a, d) * 180 / math.pi
-    bla = math.atan2(a, c) * 180 / math.pi
+    bla = math.atan2(a, d) * 180 / math.pi
+    bra = math.atan2(a, c) * 180 / math.pi
 
     # Normalize wheel speeds
     max_speed = max(frs, fls, rls, rrs)
@@ -59,28 +59,28 @@ def run_swerve_drive():
         rls /= max_speed
 
     # Wheel positions
-    FLpos = 0    #  FLencoder.getVoltage() / 3.3 * 360 - FLoffset
     FRpos = 0    #  FRencoder.getVoltage() / 3.3 * 360 - FRoffset
+    FLpos = 0    #  FLencoder.getVoltage() / 3.3 * 360 - FLoffset
     BLpos = 0    #  BLencoder.getVoltage() / 3.3 * 360 - BLoffset
     BRpos = 0    #  BRencoder.getVoltage() / 3.3 * 360 - BRoffset
 
     # Errors
-    FLerror = normalize_degrees(fla - FLpos)
     FRerror = normalize_degrees(fra - FRpos)
+    FLerror = normalize_degrees(fla - FLpos)
     BLerror = normalize_degrees(bla - BLpos)
     BRerror = normalize_degrees(bra - BRpos)
 
     # Flip shortcut
-    if MOTOR_FLIPPING and abs(FLerror) > math.pi / 2:
-        fla = normalize_degrees(fla - math.pi)
-        FLflipped = True
-    else:
-        FLflipped = False
     if MOTOR_FLIPPING and abs(FRerror) > math.pi / 2:
         fra = normalize_degrees(fra - math.pi)
         FRflipped = True
     else:
         FRflipped = False
+    if MOTOR_FLIPPING and abs(FLerror) > math.pi / 2:
+        fla = normalize_degrees(fla - math.pi)
+        FLflipped = True
+    else:
+        FLflipped = False
     if MOTOR_FLIPPING and abs(BLerror) > math.pi / 2:
         bla = normalize_degrees(bla - math.pi)
         BLflipped = True
@@ -92,14 +92,14 @@ def run_swerve_drive():
     else:
         BRflipped = False
 
-    FLerror = normalize_degrees(fla - FLpos)
     FRerror = normalize_degrees(fra - FRpos)
+    FLerror = normalize_degrees(fla - FLpos)
     BLerror = normalize_degrees(bla - BLpos)
     BRerror = normalize_degrees(bra - BRpos)
 
     # Calculate wheel PID angles
-    FLoutput = kP * FLerror
     FRoutput = kP * FRerror
+    FLoutput = kP * FLerror
     BLoutput = kP * BLerror
     BRoutput = kP * BRerror
 
@@ -130,20 +130,20 @@ def run_swerve_drive():
     #     BRdrive.setPower(rrs)
 
     # Telemetry wheel speeds
-    print("FLspeed:", fls)
     print("FRspeed:", frs)
+    print("FLspeed:", fls)
     print("BLspeed:", rls)
     print("BRspeed:", rrs)
 
     # Telemetry wheel angles
-    print("FLangle:", fla)
     print("FRangle:", fra)
+    print("FLangle:", fla)
     print("BLangle:", bla)
     print("BRangle:", bra)
 
     # Telemetry flipped values
-    print("FLflipped:", FLflipped)
     print("FRflipped:", FRflipped)
+    print("FLflipped:", FLflipped)
     print("BLflipped:", BLflipped)
     print("BRflipped:", BRflipped)
 
