@@ -116,8 +116,8 @@ public class SwerveDriveOpMode extends LinearOpMode {
             double fwd2 = temp;
 
             // units doesn't matter as long as they are the same
-            double wheelbase = 24.0;
-            double trackwidth = 24.0;
+            double wheelbase = 9.492126;
+            double trackwidth = 9.492126;
             double r = Math.sqrt((wheelbase*wheelbase) + (trackwidth*trackwidth));
 
             double a = str2 - rcw * (wheelbase/r);
