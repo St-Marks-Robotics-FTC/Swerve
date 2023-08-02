@@ -1,10 +1,21 @@
 import time
 import math
 
+curFR = 0.0
+curFL = 0.0
+curBL = 0.0
+curBR = 0.0
+
+def clamp(num, min_value, max_value):
+   return max(min(num, max_value), min_value)
+
 def normalize_degrees(degrees):
     return (degrees + 180) % 360 - 180
 
-def run_swerve_drive():
+def run_swerve_drive(forward, strafe, rotation):
+    global curFR, curFL, curBL, curBR
+
+
     kP = 0.0
     kI = 0.0
     kD = 0.0
@@ -21,9 +32,9 @@ def run_swerve_drive():
     r = math.sqrt(wheelbase**2 + trackwidth**2)
 
     # while True:
-    fwd = 0            # -gamepad1.left_stick_y  # Pushing joystick up is negative
-    str = 0            # gamepad1.left_stick_x   # Pushing joystick to the right is positive
-    rcw = .5            # gamepad1.right_stick_x  # Clockwise rotation is positive
+    fwd = clamp(float(forward) if forward else 0, -1, 1)
+    str = clamp(float(strafe) if strafe else 0, -1, 1)
+    rcw = clamp(float(rotation) if rotation else 0, -1, 1)
 
     # Retrieve Rotational Angles and Velocities
     orientation = 0    # imu.getRobotYawPitchRollAngles()
@@ -59,10 +70,10 @@ def run_swerve_drive():
         rls /= max_speed
 
     # Wheel positions
-    FRpos = 0    #  FRencoder.getVoltage() / 3.3 * 360 - FRoffset
-    FLpos = 0    #  FLencoder.getVoltage() / 3.3 * 360 - FLoffset
-    BLpos = 0    #  BLencoder.getVoltage() / 3.3 * 360 - BLoffset
-    BRpos = 0    #  BRencoder.getVoltage() / 3.3 * 360 - BRoffset
+    FRpos = curFR    #  FRencoder.getVoltage() / 3.3 * 360 - FRoffset
+    FLpos = curFL    #  FLencoder.getVoltage() / 3.3 * 360 - FLoffset
+    BLpos = curBL    #  BLencoder.getVoltage() / 3.3 * 360 - BLoffset
+    BRpos = curBR    #  BRencoder.getVoltage() / 3.3 * 360 - BRoffset
 
     # Errors
     FRerror = normalize_degrees(fra - FRpos)
@@ -147,7 +158,18 @@ def run_swerve_drive():
     print("BLflipped:", BLflipped)
     print("BRflipped:", BRflipped)
 
+    curFR = fra
+    curFL = fla
+    curBL = bla
+    curBR = bra
+
     time.sleep(0.5)
 
 # Run the main function
-run_swerve_drive()
+while True:
+    forward = input("Enter forward: ")
+    strafe = input("Enter strafe: ")
+    rotation = input("Enter rotation: ")
+
+    run_swerve_drive(forward, strafe, rotation)
+    print("")
