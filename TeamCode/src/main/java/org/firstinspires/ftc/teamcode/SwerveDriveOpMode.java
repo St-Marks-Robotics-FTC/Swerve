@@ -111,7 +111,7 @@ public class SwerveDriveOpMode extends LinearOpMode {
             double rcw = gamepad1.right_stick_x; // Clockwise rotation is positive
 
             // continue if no value
-            if (Math.abs(fwd) < joystickLimit && Math.abs(str) < joystickLimit && Math.abs(rcw) < joystickLimit)) {
+            if (Math.abs(fwd) < joystickLimit && Math.abs(str) < joystickLimit && Math.abs(rcw) < joystickLimit) {
                 FRdrive.setPower(0);
                 FLdrive.setPower(0);
                 BLdrive.setPower(0);
