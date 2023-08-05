@@ -169,13 +169,13 @@ class SwerveModule(object):
                 self.speed_desired = -self._direction_vector[1]
                 
         else:
-            print "SwerveModule.set_direction_vector: Must pass in a vector in the form (direction, hypotenuse) where direction is in range 0 to 360 and hypotenuse is in range 0 to 1."
+            print("SwerveModule.set_direction_vector: Must pass in a vector in the form (direction, hypotenuse) where direction is in range 0 to 360 and hypotenuse is in range 0 to 1.")
     
     def update_position(self):
         #function to update the position and speed of the swerve drive so that it spins to the correct orientation then drives
         opposite_desired = (self._direction_vector[0] + 180.0) % 360.0
         if self.current_swerve_angle != self._direction_vector[0] and self.current_swerve_angle != opposite_desired:
-            print "updating angle"
+            print ("updating angle")
             #if the swerve drive is not currently in the correct position
             opposite_forward = (self.current_swerve_angle + 180.0) % 360.0
             if abs(self.current_swerve_angle - self._direction_vector[0]) < abs(opposite_forward - self._direction_vector[0]):
