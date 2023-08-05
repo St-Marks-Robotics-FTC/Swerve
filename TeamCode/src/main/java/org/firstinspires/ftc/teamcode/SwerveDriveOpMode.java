@@ -112,6 +112,15 @@ public class SwerveDriveOpMode extends LinearOpMode {
 
             // continue if no value
             if (Math.abs(fwd) < joystickLimit && Math.abs(str) < joystickLimit && Math.abs(rcw) < joystickLimit)) {
+                FRdrive.setPower(0);
+                FLdrive.setPower(0);
+                BLdrive.setPower(0);
+                BRdrive.setPower(0);
+
+                FRsteer.setPower(0);
+                FLsteer.setPower(0);
+                BLsteer.setPower(0);
+                BRsteer.setPower(0);
                 continue;
             }
 
