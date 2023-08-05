@@ -26,6 +26,7 @@ public class SwerveDriveOpMode extends LinearOpMode {
     private AnalogInput FLencoder, FRencoder, BLencoder, BRencoder;
 
     public static boolean MOTOR_FLIPPING = false;
+    public static double joystickLimit = .001;
 
     public boolean FLflipped = false;
     public boolean FRflipped = false;
@@ -109,6 +110,11 @@ public class SwerveDriveOpMode extends LinearOpMode {
             double str = gamepad1.left_stick_x; // Pushing joystick to the right is positive
             double rcw = gamepad1.right_stick_x; // Clockwise rotation is positive
 
+            // continue if no value
+            if (Math.abs(fwd) < joystickLimit && Math.abs(str) < joystickLimit && Math.abs(rcw) < joystickLimit)) {
+                continue;
+            }
+
             // Retrieve Rotational Angles and Velocities
             YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
 
@@ -158,7 +164,7 @@ public class SwerveDriveOpMode extends LinearOpMode {
             }
 
 
-            // Set wheel angles
+            // Set angle PIDs
             FRpid.setPID(kP, kI, kD);
             FLpid.setPID(kP, kI, kD);
             BLpid.setPID(kP, kI, kD);
