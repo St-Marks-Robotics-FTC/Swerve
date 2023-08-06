@@ -44,9 +44,9 @@ public class SwerveDriveOpMode extends LinearOpMode {
     IMU imu;
 
 
-    public static double kP = 0.0;
+    public static double kP = 0.5;
     public static double kI = 0.0;
-    public static double kD = 0.0;
+    public static double kD = 0.1;
 
 
     @Override
