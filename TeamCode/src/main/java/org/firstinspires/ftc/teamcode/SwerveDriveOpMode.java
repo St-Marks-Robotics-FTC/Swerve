@@ -48,6 +48,11 @@ public class SwerveDriveOpMode extends LinearOpMode {
     public static double kI = 0.0;
     public static double kD = 0.1;
 
+    public static double fw_r = 4;
+    public static double str_r = 4;
+    public static double rot_r = 4;
+
+
 
     @Override
     public void runOpMode() {
@@ -102,6 +107,10 @@ public class SwerveDriveOpMode extends LinearOpMode {
         PIDController BLpid = new PIDController(kP, kI, kD);
         PIDController BRpid = new PIDController(kP, kI, kD);
 
+        SlewRateLimiter fwSlew = new SlewRateLimiter(fw_r);
+        SlewRateLimiter strSlew = new SlewRateLimiter(str_r);
+        SlewRateLimiter rotSlew = new SlewRateLimiter(rot_r);
+
         waitForStart();
 
         while (opModeIsActive()) {
@@ -109,6 +118,11 @@ public class SwerveDriveOpMode extends LinearOpMode {
             double fwd = -gamepad1.left_stick_y; // Pushing joystick up is negative
             double str = gamepad1.left_stick_x; // Pushing joystick to the right is positive
             double rcw = gamepad1.right_stick_x; // Clockwise rotation is positive
+
+            // slew rate limit
+            fwd = fwSlew.calculate(fwd);
+            str = strSlew.calculate(str);
+            rcw = rotSlew.calculate(rcw);
 
             // continue if no value
             if (Math.abs(fwd) < joystickLimit && Math.abs(str) < joystickLimit && Math.abs(rcw) < joystickLimit) {
