@@ -24,6 +24,6 @@ dependencies {
 
     // Optional
     implementation 'com.acmerobotics.dashboard:dashboard:0.4.10' // Dashboard
-    implementation 'com.github.Eeshwar-Krishnan:PhotonFTC:dev-SNAPSHOT' // Photon
+//    implementation 'com.github.Eeshwar-Krishnan:PhotonFTC:3.0.0-ALPHA' // Photon
 }
 
