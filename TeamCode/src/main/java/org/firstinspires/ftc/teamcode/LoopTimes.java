@@ -11,11 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class LoopTimes extends LinearOpMode {
 
 
-    ElapsedTime loopTimer = new ElapsedTime();
-
-    double clawPos = 0;
-    int slidePos = 0;
-
+    final ElapsedTime loopTimer = new ElapsedTime();
 
 
     @Override

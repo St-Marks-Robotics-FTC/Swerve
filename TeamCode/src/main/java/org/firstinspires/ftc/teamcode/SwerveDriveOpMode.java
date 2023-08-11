@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PwmControl;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -21,6 +22,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 @Config
 @TeleOp
 public class SwerveDriveOpMode extends LinearOpMode {
+    ElapsedTime loopTimer = new ElapsedTime();
+
     private DcMotor FLdrive, FRdrive, BLdrive, BRdrive;
     private CRServoImplEx FLsteer, FRsteer, BLsteer, BRsteer;
     private AnalogInput FLencoder, FRencoder, BLencoder, BRencoder;
@@ -112,6 +115,7 @@ public class SwerveDriveOpMode extends LinearOpMode {
         SlewRateLimiter rotSlew = new SlewRateLimiter(rot_r);
 
         waitForStart();
+        loopTimer.reset();
 
         while (opModeIsActive()) {
 
@@ -293,6 +297,11 @@ public class SwerveDriveOpMode extends LinearOpMode {
             telemetry.addData("FLflipped", FLflipped);
             telemetry.addData("BLflipped", BLflipped);
             telemetry.addData("BRflipped", BRflipped);
+
+            // telemetry loop times
+            telemetry.addData("Loop Time: ", loopTimer.milliseconds());
+            telemetry.addData("Loop Frequency: ", 1/loopTimer.milliseconds());
+            loopTimer.reset();
 
 
             telemetry.update();
