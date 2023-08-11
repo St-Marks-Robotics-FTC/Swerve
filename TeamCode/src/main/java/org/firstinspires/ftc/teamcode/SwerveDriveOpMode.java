@@ -66,7 +66,7 @@ public class SwerveDriveOpMode extends LinearOpMode {
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
 
         for (LynxModule hub : allHubs) {
-            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
 
 
@@ -128,6 +128,9 @@ public class SwerveDriveOpMode extends LinearOpMode {
         loopTimer.reset();
 
         while (opModeIsActive()) {
+            for (LynxModule hub : allHubs) {
+                hub.clearBulkCache();
+            }
 
             double fwd = -gamepad1.left_stick_y; // Pushing joystick up is negative
             double str = gamepad1.left_stick_x; // Pushing joystick to the right is positive
