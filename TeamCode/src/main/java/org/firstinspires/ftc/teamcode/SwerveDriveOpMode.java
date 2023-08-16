@@ -102,8 +102,7 @@ public class SwerveDriveOpMode extends LinearOpMode {
         imuThread = new Thread(() -> {
             while (!isStopRequested() && opModeIsActive()) {
                 synchronized (imuLock) {
-                    YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-                    imuAngle = orientation.getYaw(AngleUnit.RADIANS);
+                    imuAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
                 }
             }
         });
