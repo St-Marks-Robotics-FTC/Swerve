@@ -71,6 +71,7 @@ public class SwerveDriveOpMode extends LinearOpMode {
 
 
 
+    public static boolean slew = false;
     public static double fw_r = 4;
     public static double str_r = 4;
     public static double rot_r = 4;
@@ -194,9 +195,11 @@ public class SwerveDriveOpMode extends LinearOpMode {
             double rcw = gamepad1.right_stick_x; // Clockwise rotation is positive
 
             // slew rate limit
-            fwd = fwSlew.calculate(fwd);
-            str = strSlew.calculate(str);
-            rcw = rotSlew.calculate(rcw);
+            if (slew) {
+                fwd = fwSlew.calculate(fwd);
+                str = strSlew.calculate(str);
+                rcw = rotSlew.calculate(rcw);
+            }
 
             // continue if no value
             if (Math.abs(fwd) < joystickLimit && Math.abs(str) < joystickLimit && Math.abs(rcw) < joystickLimit) {
