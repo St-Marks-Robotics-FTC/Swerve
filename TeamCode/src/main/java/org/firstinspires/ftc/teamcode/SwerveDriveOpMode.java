@@ -28,6 +28,7 @@ import javax.annotation.concurrent.GuardedBy;
 @Config
 @TeleOp
 public class SwerveDriveOpMode extends LinearOpMode {
+    public static boolean threading = false;
     private final Object imuLock = new Object();
     @GuardedBy("imuLock")
     public IMU imu;
@@ -78,13 +79,41 @@ public class SwerveDriveOpMode extends LinearOpMode {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
 
-
-        synchronized (imuLock) {
+        if (threading) {
+            synchronized (imuLock) {
 //            imu = hardwareMap.get(BNO055IMU.class, "imu");
 //            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 //            parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
 //            imu.initialize(parameters);
 
+                imu = hardwareMap.get(IMU.class, "imu");
+
+                RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+                RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+
+                RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
+
+                // Now initialize the IMU with this mounting orientation
+                // Note: if you choose two conflicting directions, this initialization will cause a code exception.
+                imu.initialize(new IMU.Parameters(orientationOnRobot));
+                // Reset Yaw
+                imu.resetYaw();
+            }
+
+            imuThread = new Thread(() -> {
+                while (!isStopRequested() && opModeIsActive()) {
+                    synchronized (imuLock) {
+                        imuAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+                    }
+                }
+            });
+            imuThread.start();
+
+            telemetry.addLine("IMU thread started");
+            telemetry.update();
+        } else {
+            // Retrieve and initialize the IMU.
+            // This sample expects the IMU to be in a REV Hub and named "imu".
             imu = hardwareMap.get(IMU.class, "imu");
 
             RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
@@ -99,30 +128,9 @@ public class SwerveDriveOpMode extends LinearOpMode {
             imu.resetYaw();
         }
 
-        imuThread = new Thread(() -> {
-            while (!isStopRequested() && opModeIsActive()) {
-                synchronized (imuLock) {
-                    imuAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-                }
-            }
-        });
-        imuThread.start();
 
 
-        // Retrieve and initialize the IMU.
-        // This sample expects the IMU to be in a REV Hub and named "imu".
-//        imu = hardwareMap.get(IMU.class, "imu");
-//
-//        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-//        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
-//
-//        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
-//
-//        // Now initialize the IMU with this mounting orientation
-//        // Note: if you choose two conflicting directions, this initialization will cause a code exception.
-//        imu.initialize(new IMU.Parameters(orientationOnRobot));
-//        // Reset Yaw
-//        imu.resetYaw();
+
 
 
         // Initialize hardware components
