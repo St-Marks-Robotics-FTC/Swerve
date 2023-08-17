@@ -49,10 +49,10 @@ public class SwerveDriveOpMode extends LinearOpMode {
     public boolean BLflipped = false;
     public boolean BRflipped = false;
 
-    public boolean FLflippedEnc = false;
-    public boolean FRflippedEnc = false;
-    public boolean BLflippedEnc = false;
-    public boolean BRflippedEnc = false;
+    public static boolean FLflippedEnc = false;
+    public static boolean FRflippedEnc = false;
+    public static boolean BLflippedEnc = false;
+    public static boolean BRflippedEnc = false;
 
 
     public static double FLoffset = 0.0;
@@ -68,6 +68,8 @@ public class SwerveDriveOpMode extends LinearOpMode {
     public static double kP = 0.5;
     public static double kI = 0.0;
     public static double kD = 0.1;
+
+
 
     public static double fw_r = 4;
     public static double str_r = 4;
