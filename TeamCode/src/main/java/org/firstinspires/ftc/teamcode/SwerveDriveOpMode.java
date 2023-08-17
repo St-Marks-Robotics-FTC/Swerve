@@ -49,6 +49,11 @@ public class SwerveDriveOpMode extends LinearOpMode {
     public boolean BLflipped = false;
     public boolean BRflipped = false;
 
+    public boolean FLflippedEnc = false;
+    public boolean FRflippedEnc = false;
+    public boolean BLflippedEnc = false;
+    public boolean BRflippedEnc = false;
+
 
     public static double FLoffset = 0.0;
     public static double FRoffset = 0.0;
@@ -260,11 +265,42 @@ public class SwerveDriveOpMode extends LinearOpMode {
             BLpid.setPID(kP, kI, kD);
             BRpid.setPID(kP, kI, kD);
 
+
+            double FRpos;
+            double FLpos;
+            double BLpos;
+            double BRpos;
             // Wheel positions
-            double FRpos = FRencoder.getVoltage() / 3.3 * 360 - FRoffset;
-            double FLpos = FLencoder.getVoltage() / 3.3 * 360 - FLoffset;
-            double BLpos = BLencoder.getVoltage() / 3.3 * 360 - BLoffset;
-            double BRpos = BRencoder.getVoltage() / 3.3 * 360 - BRoffset;
+            if (FRflippedEnc) {
+                FRpos = 360 - FRencoder.getVoltage() / 3.3 * 360;
+            } else {
+                FRpos = FRencoder.getVoltage() / 3.3 * 360;
+            }
+
+            if (FLflippedEnc) {
+                FLpos = 360 - FLencoder.getVoltage() / 3.3 * 360;
+            } else {
+                FLpos = FLencoder.getVoltage() / 3.3 * 360;
+            }
+
+            if (BLflippedEnc) {
+                BLpos = 360 - BLencoder.getVoltage() / 3.3 * 360;
+            } else {
+                BLpos = BLencoder.getVoltage() / 3.3 * 360;
+            }
+
+            if (BRflippedEnc) {
+                BRpos = 360 - BRencoder.getVoltage() / 3.3 * 360;
+            } else {
+                BRpos = BRencoder.getVoltage() / 3.3 * 360;
+            }
+            //apply offsets
+            FRpos -= FRoffset;
+            FLpos -= FLoffset;
+            BLpos -= BLoffset;
+            BRpos -= BRoffset;
+
+
 
             // Errors
             double FRerror = normalizeDegrees(fra - FRpos);
