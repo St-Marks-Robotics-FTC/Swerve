@@ -66,11 +66,13 @@ public class PIDtest extends LinearOpMode {
 
             double output = servoPID.calculate(curPos, targetPos);
 
-//            if (gamepad1.right_trigger > 0.1) {
-//                output = gamepad1.right_trigger;
-//            } else if (gamepad1.left_trigger > 0.1) {
-//                output = -gamepad1.left_trigger;
-//            }
+            
+            // + is clockwise    - is anticlockwise
+            if (gamepad1.right_trigger > 0.1) {
+                output = gamepad1.right_trigger;
+            } else if (gamepad1.left_trigger > 0.1) {
+                output = -gamepad1.left_trigger;
+            }
 
             servo.setPower(output);
 
