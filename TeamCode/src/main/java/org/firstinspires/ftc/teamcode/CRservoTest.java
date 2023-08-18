@@ -18,6 +18,7 @@ public class CRservoTest extends LinearOpMode {
     public static double servoPos = 0;
 
     public static String servoName = "FRsteer";
+    public static String encoderName = "FRencoder";
 
     private CRServoImplEx servo;
     private AnalogInput servoEncoder;
@@ -33,7 +34,7 @@ public class CRservoTest extends LinearOpMode {
         servo = hardwareMap.get(CRServoImplEx.class, servoName);
         servo.setPwmRange(new PwmControl.PwmRange(500, 2500));
 
-        servoEncoder = hardwareMap.get(AnalogInput.class, "FRencoder");
+        servoEncoder = hardwareMap.get(AnalogInput.class, encoderName);
 
 
         PIDController servoPID = new PIDController(kP, kI, kD);
