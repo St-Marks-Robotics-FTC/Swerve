@@ -31,6 +31,9 @@ public class CRservoTest extends LinearOpMode {
     public static double kI = 0.0;
     public static double kD = 0;
 
+    public static boolean flipEncoder = false;
+
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -65,7 +68,12 @@ public class CRservoTest extends LinearOpMode {
                 targetPos = 270;
             }
 
+
             double curPos = servoEncoder.getVoltage() / 3.3 * 360;
+            if (flipEncoder) {
+                curPos = 360 - curPos;
+            }
+
 
             double error = normalizeDegrees(targetPos - curPos);
 
