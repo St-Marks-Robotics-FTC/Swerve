@@ -4,7 +4,9 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.norm
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
 
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -80,6 +82,9 @@ public class SwerveDriveOpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
 
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
 
@@ -395,6 +400,14 @@ public class SwerveDriveOpMode extends LinearOpMode {
             telemetry.addData("FLangle", fla);
             telemetry.addData("BLangle", bla);
             telemetry.addData("BRangle", bra);
+
+            // telemetry actual wheel angles
+            telemetry.addData("FR Current Pos", FRpos);
+            telemetry.addData("FL Current Pos", FLpos);
+            telemetry.addData("BL Current Pos", BLpos);
+            telemetry.addData("BR Current Pos", BRpos);
+
+
 
             // telemetry flipped values
             telemetry.addData("FRflipped", FRflipped);
