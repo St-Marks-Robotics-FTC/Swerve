@@ -25,7 +25,7 @@ public class CRservoTest extends LinearOpMode {
     private CRServoImplEx servo;
     private AnalogInput servoEncoder;
 
-    public static double kP = 1/25;
+    public static double kP = .04; //1/25
     public static double kI = 0.0;
     public static double kD = 0;
 
