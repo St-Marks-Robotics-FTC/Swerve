@@ -54,7 +54,11 @@ public class CRservoTest extends LinearOpMode {
 
             double output = servoPID.calculate(servoEncoder.getVoltage() / 3.3 * 360, servoPos);
 
-            servo.setPower(output);
+            if (gamepad1.right_trigger > 0.1) {
+                servo.setPower(gamepad1.right_trigger);
+            } else {
+                servo.setPower(output);
+            }
 
 
 
