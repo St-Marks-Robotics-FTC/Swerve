@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.hardware.PwmControl;
 @TeleOp
 public class CRservoTest extends LinearOpMode {
 
-    public static double servoPos = 0;
+    public static double servoPos = 180;
 
     public static String servoName = "FRsteer";
     public static String encoderName = "FRencoder";
