@@ -51,6 +51,7 @@ public class CRservoTest extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
+            servoPID.setPID(kP, kI, kD);
 
             double output = servoPID.calculate(servoEncoder.getVoltage() / 3.3 * 360, servoPos);
 
