@@ -61,6 +61,8 @@ public class CRservoTest extends LinearOpMode {
             telemetry.addData("Servo Set Position: ", servoPos);
             telemetry.addData("Servo Current Position: ", servoEncoder.getVoltage() / 3.3 * 360);
 
+            telemetry.addData("Servo Power: ", output);
+
             telemetry.update();
         }
     }
