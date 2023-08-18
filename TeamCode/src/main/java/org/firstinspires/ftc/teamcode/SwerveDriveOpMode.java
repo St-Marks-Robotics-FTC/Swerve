@@ -43,22 +43,25 @@ public class SwerveDriveOpMode extends LinearOpMode {
     private CRServoImplEx FLsteer, FRsteer, BLsteer, BRsteer;
     private AnalogInput FLencoder, FRencoder, BLencoder, BRencoder;
 
-    public static boolean MOTOR_FLIPPING = false;
+    public static boolean MOTOR_FLIPPING = true;
     public static double joystickLimit = .001;
 
-    public boolean FLflipped = false;
+
     public boolean FRflipped = false;
+    public boolean FLflipped = false;
     public boolean BLflipped = false;
     public boolean BRflipped = false;
 
-    public static boolean FLflippedEnc = true;
+
     public static boolean FRflippedEnc = true;
+    public static boolean FLflippedEnc = true;
     public static boolean BLflippedEnc = true;
     public static boolean BRflippedEnc = true;
 
 
-    public static double FLoffset = 251;
+
     public static double FRoffset = 60;
+    public static double FLoffset = 290;
     public static double BLoffset = 231;
     public static double BRoffset = 352;
 
@@ -67,9 +70,23 @@ public class SwerveDriveOpMode extends LinearOpMode {
     //IMU imu;
 
 
-    public static double kP = .02; //1/25
-    public static double kI = 0.0;
-    public static double kD = 0;
+    public static double kPFR = .02; //1/25
+    public static double kIFR = 0.0;
+    public static double kDFR = 0;
+
+    public static double kPFL = .008; //1/25
+    public static double kIFL = 0.0;
+    public static double kDFL = 0;
+
+    public static double kPBL = .008; //1/25
+    public static double kIBL = 0.0;
+    public static double kDBL = 0;
+
+    public static double kPBR = .008; //1/25
+    public static double kIBR = 0.0;
+    public static double kDBR = 0;
+
+
 
 
 
@@ -175,10 +192,10 @@ public class SwerveDriveOpMode extends LinearOpMode {
         BRencoder = hardwareMap.get(AnalogInput.class, "BRencoder");
 
 
-        PIDController FRpid = new PIDController(kP, kI, kD);
-        PIDController FLpid = new PIDController(kP, kI, kD);
-        PIDController BLpid = new PIDController(kP, kI, kD);
-        PIDController BRpid = new PIDController(kP, kI, kD);
+        PIDController FRpid = new PIDController(kPFR, kIFR, kDFR);
+        PIDController FLpid = new PIDController(kPFL, kIFL, kDFL);
+        PIDController BLpid = new PIDController(kPBL, kIBL, kDBL);
+        PIDController BRpid = new PIDController(kPBR, kIBR, kDBR);
 
         SlewRateLimiter fwSlew = new SlewRateLimiter(fw_r);
         SlewRateLimiter strSlew = new SlewRateLimiter(str_r);
@@ -270,10 +287,10 @@ public class SwerveDriveOpMode extends LinearOpMode {
 
 
             // Set angle PIDs
-            FRpid.setPID(kP, kI, kD);
-            FLpid.setPID(kP, kI, kD);
-            BLpid.setPID(kP, kI, kD);
-            BRpid.setPID(kP, kI, kD);
+            FRpid.setPID(kPFR, kIFR, kDFR);
+            FLpid.setPID(kPFL, kIFL, kDFL);
+            BLpid.setPID(kPBL, kIBL, kDBL);
+            BRpid.setPID(kPBR, kIBR, kDBR);
 
 
             double FRpos;
@@ -367,14 +384,14 @@ public class SwerveDriveOpMode extends LinearOpMode {
 
             // Set drive powers
             if (FRflipped)
-                FRdrive.setPower(-frs);
-            else
                 FRdrive.setPower(frs);
+            else
+                FRdrive.setPower(-frs);
 
             if (FLflipped)
-                FLdrive.setPower(-fls);
-            else
                 FLdrive.setPower(fls);
+            else
+                FLdrive.setPower(-fls);
 
             if (BLflipped)
                 BLdrive.setPower(-bls);
@@ -382,9 +399,9 @@ public class SwerveDriveOpMode extends LinearOpMode {
                 BLdrive.setPower(bls);
 
             if (BRflipped)
-                BRdrive.setPower(-brs);
-            else
                 BRdrive.setPower(brs);
+            else
+                BRdrive.setPower(-brs);
 
 
 

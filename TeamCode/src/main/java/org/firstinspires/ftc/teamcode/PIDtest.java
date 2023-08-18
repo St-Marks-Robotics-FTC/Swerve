@@ -79,7 +79,7 @@ public class PIDtest extends LinearOpMode {
 
 
             telemetry.addData("Servo Target Position: ", targetPos);
-            telemetry.addData("Servo Current Position: ", servoEncoder.getVoltage() / 3.3 * 360);
+            telemetry.addData("Servo Current Position: ", curPos);
 
             telemetry.addData("Servo Power: ", output);
 
