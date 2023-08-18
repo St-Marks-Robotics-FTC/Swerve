@@ -66,7 +66,7 @@ public class PIDtest extends LinearOpMode {
 
             double output = servoPID.calculate(curPos, targetPos);
 
-            
+
             // + is clockwise    - is anticlockwise
             if (gamepad1.right_trigger > 0.1) {
                 output = gamepad1.right_trigger;

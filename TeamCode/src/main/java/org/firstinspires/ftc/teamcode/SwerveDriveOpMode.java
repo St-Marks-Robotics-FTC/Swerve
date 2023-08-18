@@ -51,16 +51,16 @@ public class SwerveDriveOpMode extends LinearOpMode {
     public boolean BLflipped = false;
     public boolean BRflipped = false;
 
-    public static boolean FLflippedEnc = false;
-    public static boolean FRflippedEnc = false;
-    public static boolean BLflippedEnc = false;
-    public static boolean BRflippedEnc = false;
+    public static boolean FLflippedEnc = true;
+    public static boolean FRflippedEnc = true;
+    public static boolean BLflippedEnc = true;
+    public static boolean BRflippedEnc = true;
 
 
-    public static double FLoffset = 69;
-    public static double FRoffset = 300;
-    public static double BLoffset = 129;
-    public static double BRoffset = 8;
+    public static double FLoffset = 251;
+    public static double FRoffset = 60;
+    public static double BLoffset = 231;
+    public static double BRoffset = 352;
 
 
     // The IMU sensor object
