@@ -168,6 +168,11 @@ public class SwerveDriveOpMode extends LinearOpMode {
         FLdrive = hardwareMap.get(DcMotor.class, "FLdrive");
         BLdrive = hardwareMap.get(DcMotor.class, "BLdrive");
         BRdrive = hardwareMap.get(DcMotor.class, "BRdrive");
+
+        FRdrive.setDirection(DcMotor.Direction.REVERSE);
+        FLdrive.setDirection(DcMotor.Direction.REVERSE);
+//        BLdrive.setDirection(DcMotor.Direction.REVERSE);
+        BRdrive.setDirection(DcMotor.Direction.REVERSE);
         
         // velocity pid
         FRdrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -384,14 +389,14 @@ public class SwerveDriveOpMode extends LinearOpMode {
 
             // Set drive powers
             if (FRflipped)
-                FRdrive.setPower(frs);
-            else
                 FRdrive.setPower(-frs);
+            else
+                FRdrive.setPower(frs);
 
             if (FLflipped)
-                FLdrive.setPower(fls);
-            else
                 FLdrive.setPower(-fls);
+            else
+                FLdrive.setPower(fls);
 
             if (BLflipped)
                 BLdrive.setPower(-bls);
@@ -399,9 +404,9 @@ public class SwerveDriveOpMode extends LinearOpMode {
                 BLdrive.setPower(bls);
 
             if (BRflipped)
-                BRdrive.setPower(brs);
-            else
                 BRdrive.setPower(-brs);
+            else
+                BRdrive.setPower(brs);
 
 
 
