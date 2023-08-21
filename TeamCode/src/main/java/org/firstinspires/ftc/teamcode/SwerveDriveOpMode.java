@@ -168,6 +168,11 @@ public class SwerveDriveOpMode extends LinearOpMode {
         FLdrive = hardwareMap.get(DcMotor.class, "FLdrive");
         BLdrive = hardwareMap.get(DcMotor.class, "BLdrive");
         BRdrive = hardwareMap.get(DcMotor.class, "BRdrive");
+
+        FRdrive.setDirection(DcMotor.Direction.REVERSE);
+        FLdrive.setDirection(DcMotor.Direction.REVERSE);
+//        BLdrive.setDirection(DcMotor.Direction.REVERSE);
+        BRdrive.setDirection(DcMotor.Direction.REVERSE);
         
         // velocity pid
         FRdrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -204,7 +209,56 @@ public class SwerveDriveOpMode extends LinearOpMode {
 //        PhotonCore.experimental.setMaximumParallelCommands(8);
 //        PhotonCore.enable();
 
-        waitForStart();
+//        waitForStart();
+
+        double FRpos;
+        double FLpos;
+        double BLpos;
+        double BRpos;
+
+        while (opModeInInit()) {
+            if (FRflippedEnc) {
+                FRpos = 360 - FRencoder.getVoltage() / 3.3 * 360;
+            } else {
+                FRpos = FRencoder.getVoltage() / 3.3 * 360;
+            }
+
+            if (FLflippedEnc) {
+                FLpos = 360 - FLencoder.getVoltage() / 3.3 * 360;
+            } else {
+                FLpos = FLencoder.getVoltage() / 3.3 * 360;
+            }
+
+            if (BLflippedEnc) {
+                BLpos = 360 - BLencoder.getVoltage() / 3.3 * 360;
+            } else {
+                BLpos = BLencoder.getVoltage() / 3.3 * 360;
+            }
+
+            if (BRflippedEnc) {
+                BRpos = 360 - BRencoder.getVoltage() / 3.3 * 360;
+            } else {
+                BRpos = BRencoder.getVoltage() / 3.3 * 360;
+            }
+
+            //apply offsets
+//            FRpos -= FRoffset;
+//            FLpos -= FLoffset;
+//            BLpos -= BLoffset;
+//            BRpos -= BRoffset;
+
+
+
+            FRsteer.setPower(FRpid.calculate(FRpos, FRoffset));
+            FLsteer.setPower(FLpid.calculate(FLpos, FLoffset));
+            BLsteer.setPower(BLpid.calculate(BLpos, BLoffset));
+            BRsteer.setPower(BRpid.calculate(BRpos, BRoffset));
+
+
+
+        }
+
+
         loopTimer.reset();
 
         while (opModeIsActive()) {
@@ -295,10 +349,7 @@ public class SwerveDriveOpMode extends LinearOpMode {
             BRpid.setPID(kPBR, kIBR, kDBR);
 
 
-            double FRpos;
-            double FLpos;
-            double BLpos;
-            double BRpos;
+
             // Wheel positions
             if (FRflippedEnc) {
                 FRpos = 360 - FRencoder.getVoltage() / 3.3 * 360;
@@ -391,9 +442,9 @@ public class SwerveDriveOpMode extends LinearOpMode {
                 FRdrive.setPower(frs);
 
             if (FLflipped)
-                FLdrive.setPower(fls);
-            else
                 FLdrive.setPower(-fls);
+            else
+                FLdrive.setPower(fls);
 
             if (BLflipped)
                 BLdrive.setPower(-bls);
@@ -401,9 +452,9 @@ public class SwerveDriveOpMode extends LinearOpMode {
                 BLdrive.setPower(bls);
 
             if (BRflipped)
-                BRdrive.setPower(brs);
-            else
                 BRdrive.setPower(-brs);
+            else
+                BRdrive.setPower(brs);
 
 
 
