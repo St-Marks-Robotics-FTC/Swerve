@@ -35,62 +35,7 @@ public class TEst {
 
     }
 
-    public void getFR ( double forward, double strafe, double turn){
-        frontLeftPower = -forward + turn - strafe;
-        frontRightPower = -forward - turn + strafe;
-        backLeftPower = -forward + turn + strafe;
-        backRightPower = -forward - turn - strafe;
 
-
-        setPowers(frontLeftPower, frontRightPower, backLeftPower, backRightPower);
-
-
-    }
-
-
-
-
-    private void setPowers(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
-        double maxSpeed = 1.0;
-        maxSpeed = Math.max(maxSpeed, Math.abs(frontLeftPower));
-        maxSpeed = Math.max(maxSpeed, Math.abs(frontRightPower));
-        maxSpeed = Math.max(maxSpeed, Math.abs(backLeftPower));
-        maxSpeed = Math.max(maxSpeed, Math.abs(backRightPower));
-
-        frontLeftPower /= maxSpeed;
-        frontRightPower /= maxSpeed;
-        backLeftPower /= maxSpeed;
-        backRightPower /= maxSpeed;
-
-        frontleft.setPower(frontLeftPower);
-        frontright.setPower(frontRightPower);
-        backleft.setPower(backLeftPower);
-        backright.setPower(backRightPower);
-    }
-
-    public void drive ( double forward, double strafe, double turn){
-        frontLeftPower = forward + turn + strafe;
-        frontRightPower = forward - turn - strafe;
-        backLeftPower = forward + turn - strafe;
-        backRightPower = forward - turn + strafe;
-
-
-        setPowers(frontLeftPower, frontRightPower, backLeftPower, backRightPower);
-
-
-    }
-
-    public void driveReverse ( double forward, double strafe, double turn){
-        frontLeftPower = -forward + turn - strafe;
-        frontRightPower = -forward - turn + strafe;
-        backLeftPower = -forward + turn + strafe;
-        backRightPower = -forward - turn - strafe;
-
-
-        setPowers(frontLeftPower, frontRightPower, backLeftPower, backRightPower);
-
-
-    }
 
 
 }

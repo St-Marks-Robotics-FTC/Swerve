@@ -16,8 +16,6 @@ public class LoopTimes extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Gamepad currentGamepad1 = new Gamepad();
-
         loopTimer.reset();
 
         waitForStart();
