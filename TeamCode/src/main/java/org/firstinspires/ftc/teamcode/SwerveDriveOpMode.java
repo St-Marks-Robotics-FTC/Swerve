@@ -241,11 +241,14 @@ public class SwerveDriveOpMode extends LinearOpMode {
 //            YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
 
             // field centric
-            double temp = (fwd*Math.cos(imuAngle)) + str*Math.sin(imuAngle);
-            double str2 = (-fwd*Math.sin(imuAngle)) + str*Math.cos(imuAngle);
-            double fwd2 = temp;
+//            double temp = (fwd*Math.cos(imuAngle)) + str*Math.sin(imuAngle);
+//            double str2 = (-fwd*Math.sin(imuAngle)) + str*Math.cos(imuAngle);
+//            double fwd2 = temp;
 //            double fwd2 = fwd;
 //            double str2 = str;
+
+            double str2 = str * Math.cos(-imuAngle) - fwd * Math.sin(-imuAngle);
+            double fwd2 = str * Math.sin(-imuAngle) + fwd * Math.cos(-imuAngle);
 
             // units doesn't matter as long as they are the same
             double wheelbase = 9.492126;
