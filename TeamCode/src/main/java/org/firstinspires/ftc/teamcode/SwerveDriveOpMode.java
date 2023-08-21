@@ -156,6 +156,9 @@ public class SwerveDriveOpMode extends LinearOpMode {
             imu.initialize(new IMU.Parameters(orientationOnRobot));
             // Reset Yaw
             imu.resetYaw();
+
+            telemetry.addLine("No thread");
+            telemetry.update();
         }
 
 
@@ -410,6 +413,8 @@ public class SwerveDriveOpMode extends LinearOpMode {
 
 
 
+            //telemetry IMU angle
+            telemetry.addData("IMU angle", imuAngle);
 
             // telemetry wheel speeds
             telemetry.addData("FRspeed", frs);
