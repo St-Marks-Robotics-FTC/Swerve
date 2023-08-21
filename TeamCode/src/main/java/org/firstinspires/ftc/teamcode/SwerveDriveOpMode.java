@@ -90,7 +90,7 @@ public class SwerveDriveOpMode extends LinearOpMode {
 
 
 
-    public static boolean slew = false;
+    public static boolean slew = true;
     public static double fw_r = 4;
     public static double str_r = 4;
     public static double rot_r = 4;
@@ -244,6 +244,8 @@ public class SwerveDriveOpMode extends LinearOpMode {
             double temp = (fwd*Math.cos(imuAngle)) + str*Math.sin(imuAngle);
             double str2 = (-fwd*Math.sin(imuAngle)) + str*Math.cos(imuAngle);
             double fwd2 = temp;
+//            double fwd2 = fwd;
+//            double str2 = str;
 
             // units doesn't matter as long as they are the same
             double wheelbase = 9.492126;
@@ -384,9 +386,9 @@ public class SwerveDriveOpMode extends LinearOpMode {
 
             // Set drive powers
             if (FRflipped)
-                FRdrive.setPower(frs);
-            else
                 FRdrive.setPower(-frs);
+            else
+                FRdrive.setPower(frs);
 
             if (FLflipped)
                 FLdrive.setPower(fls);
