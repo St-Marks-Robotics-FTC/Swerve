@@ -407,8 +407,8 @@ public class NoThreading extends LinearOpMode {
             telemetry.addData("BRflipped", BRflipped);
 
             // telemetry loop times
-            telemetry.addData("Loop Time: ", loopTimer.milliseconds());
-            telemetry.addData("Loop Frequency: ", 1/loopTimer.milliseconds());
+            telemetry.addData("Loop Time Ms: ", loopTimer.milliseconds());
+            telemetry.addData("Loop Frequency: ", 1000/loopTimer.milliseconds());
             loopTimer.reset();
 
 
