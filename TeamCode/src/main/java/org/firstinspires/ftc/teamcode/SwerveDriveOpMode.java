@@ -38,6 +38,7 @@ public class SwerveDriveOpMode extends LinearOpMode {
     private double imuAngle = 0;
 
     ElapsedTime loopTimer = new ElapsedTime();
+    ElapsedTime totalTime = new ElapsedTime();
 
     private DcMotor FLdrive, FRdrive, BLdrive, BRdrive;
     private CRServoImplEx FLsteer, FRsteer, BLsteer, BRsteer;
@@ -415,6 +416,8 @@ public class SwerveDriveOpMode extends LinearOpMode {
 
             //telemetry IMU angle
             telemetry.addData("IMU angle", imuAngle);
+
+            telemetry.addData("Sin Wave", Math.sin(totalTime.seconds()));
 
             // telemetry wheel speeds
             telemetry.addData("FRspeed", frs);
