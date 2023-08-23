@@ -22,7 +22,7 @@ public class SlewTest extends LinearOpMode {
 
 
 
-    public static double fwd_rate_limit = 1;
+    public static double fwd_rate_limit = 4;
 
     @Override
     public void runOpMode() throws InterruptedException {
