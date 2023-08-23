@@ -63,8 +63,10 @@ public class PIDtest extends LinearOpMode {
                 curPos = 360 - curPos;
             }
 
+            double error = normalizeDegrees(targetPos - curPos);
 
-            double output = servoPID.calculate(curPos, targetPos);
+
+            double output = servoPID.calculate(0, error);
 
 
             // + is clockwise    - is anticlockwise
