@@ -27,11 +27,11 @@ public class PIDtest extends LinearOpMode {
     private CRServoImplEx servo;
     private AnalogInput servoEncoder;
 
-    public static double kP = .02; //1/25
+    public static double kP = .008; //1/25
     public static double kI = 0.0;
     public static double kD = 0;
 
-    public static boolean flipEncoder = false;
+    public static boolean flipEncoder = true;
 
 
 
