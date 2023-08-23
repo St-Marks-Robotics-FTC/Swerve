@@ -40,9 +40,11 @@ public class SlewTest extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            double fwd = -gamepad1.left_stick_y;
 
-            telemetry.addData("Joystick Y: ", -gamepad1.left_stick_y);
-            telemetry.addData("Slew Y: ", fwdSlew.calculate(-gamepad1.left_stick_y));
+
+            telemetry.addData("Joystick Y: ", fwd);
+            telemetry.addData("Slew Y: ", fwdSlew.calculate(fwd));
 
             telemetry.update();
         }
