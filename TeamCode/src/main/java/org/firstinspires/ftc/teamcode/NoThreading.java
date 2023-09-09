@@ -53,8 +53,8 @@ public class NoThreading extends LinearOpMode {
 
     public static double FRoffset = 60;
     public static double FLoffset = 290;
-    public static double BLoffset = 231;
-    public static double BRoffset = 352;
+    public static double BLoffset = 359;
+    public static double BRoffset = 40;
 
 
     // The IMU sensor object
@@ -354,9 +354,9 @@ public class NoThreading extends LinearOpMode {
 
             // Set drive powers
             if (FRflipped)
-                FRdrive.setPower(-frs);
-            else
                 FRdrive.setPower(frs);
+            else
+                FRdrive.setPower(-frs);
 
             if (FLflipped)
                 FLdrive.setPower(fls);
