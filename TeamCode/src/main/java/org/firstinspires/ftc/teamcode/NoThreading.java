@@ -181,6 +181,13 @@ public class NoThreading extends LinearOpMode {
             double str = gamepad1.left_stick_x; // Pushing joystick to the right is positive
             double rcw = gamepad1.right_stick_x; // Clockwise rotation is positive
 
+            if (gamepad1.left_bumper) {
+                fwd *= .3;
+                str *= .3;
+                rcw *= .3;
+
+            }
+
             // slew rate limit
             if (slew) {
                 fwd = fwSlew.calculate(fwd);
